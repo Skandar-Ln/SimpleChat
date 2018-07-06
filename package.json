@@ -1,0 +1,27 @@
+{
+  "name": "emergent-chat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "export NODE_ENV=dev && nodemon src/app.js",
+    "dev": "SET NODE_ENV=dev && node src/app.js",
+    "macDev": "export NODE_ENV=dev && node src/app.js",
+    "build-fe": "cd src/fe_source && npm run build && rm -rf ../static && mkdir ../static && cp -r build/* ../static"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@alicloud/sms-sdk": "^1.0.8",
+    "koa": "^2.4.1",
+    "koa-better-body": "^3.0.4",
+    "koa-compress": "^2.0.0",
+    "koa-router": "^7.4.0",
+    "koa-static": "^4.0.2",
+    "lodash": "^4.17.5",
+    "mysql2": "^1.5.2",
+    "sequelize": "^4.33.2"
+  }
+}
