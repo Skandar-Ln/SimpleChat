@@ -4,14 +4,14 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import './Chat.css';
-import hcl from '../images/hcl.png';
-import ztx from '../images/ztx.png';
+import personA from '../images/personA.png';
+import personB from '../images/personB.png';
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
 const config = {
     images: {
-        hcl,
-        ztx
+        personA,
+        personB
     }
 };
 
@@ -99,7 +99,7 @@ export default class Chat extends Component {
         if (_.isEmpty(input)) {
             return;
         }
-        const to = user === 'hcl' ? 'ztx' : 'hcl';
+        const to = user === 'personA' ? 'personB' : 'personA';
         request.post('/api/message/create', {
             from: user,
             to,
@@ -141,8 +141,8 @@ export default class Chat extends Component {
         return (
             <div>
                 <p>选择用户</p>
-                <button style={{marginRight: 20, fontSize: 30}} onClick={() => this.handleLogin('hcl')}>hcl</button>
-                <button style={{fontSize: 30}} onClick={() => this.handleLogin('ztx')}>ztx</button>
+                <button style={{marginRight: 20, fontSize: 30}} onClick={() => this.handleLogin('personA')}>personA</button>
+                <button style={{fontSize: 30}} onClick={() => this.handleLogin('personB')}>personB</button>
             </div>
         )
     }

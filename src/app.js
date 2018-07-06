@@ -22,7 +22,6 @@ router.use('/',
 // });
 
 // const session = Session(app);
-// app.keys = ['hcl-is-0'];
 
 app
     .use(compress())

@@ -3,7 +3,6 @@ const Sequelize = require('sequelize');
 
 const Message = require('../model/message');
 const Router = require('koa-router');
-const Notice = require('./notice');
 
 const util = require('./util');
 
@@ -52,17 +51,7 @@ koaRouter.post('api/message/create', async (ctx, next) => {
     await Message.create({
         ...params
     }).then(async function(files) {
-        if (fields.isPhoneNotice) {
-            await Notice(fields.content, fields.to).then(res => {
-                let {Code} = res;
-                if (Code === 'OK') {
-                    util.successHandler(ctx, '插入成功，短信发送成功');
-                }
-            });
-        }
-        else {
-            util.successHandler(ctx, '插入成功');
-        }
+        util.successHandler(ctx, '插入成功');
         state.isNew = false;
     });
 });

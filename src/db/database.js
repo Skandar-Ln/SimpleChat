@@ -6,8 +6,8 @@ if (process.env.NODE_ENV === 'dev') {
     database = 'chat_test';
 }
 
-const sequelize = new Sequelize(database, 'root', '123456', {
-    host: 'www.bulibuli.wang',
+const sequelize = new Sequelize(database, 'xxxx', 'xxxxx', {
+    host: 'xxxx',
     dialect: 'mysql',
 
     pool: {
