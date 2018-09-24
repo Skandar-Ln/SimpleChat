@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-let database = 'chat';
+let database = 'chat_temp';
 
 if (process.env.NODE_ENV === 'dev') {
     database = 'chat_test';
