@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  height: 100%;
   background-color: rgb(255, 255, 255);
 }
 
@@ -25,7 +26,7 @@
 
 .App-main {
   max-width: 400px;
-  width: 80%;
+  width: 90%;
   padding: 20px;
   display: inline-block;
 }

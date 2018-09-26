@@ -1,13 +1,14 @@
 const Sequelize = require('sequelize');
+const {database: CONFIG} = require('../../config.json');
 
-let database = 'chat_temp';
+let database = CONFIG.databaseName;
 
 if (process.env.NODE_ENV === 'dev') {
     database = 'chat_test';
 }
 
-const sequelize = new Sequelize(database, 'xxxx', 'xxxxx', {
-    host: 'xxxx',
+const sequelize = new Sequelize(database, CONFIG.user, CONFIG.password, {
+    host: CONFIG.host,
     dialect: 'mysql',
 
     pool: {

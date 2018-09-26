@@ -5,13 +5,19 @@ const Static = require('koa-static');
 const path = require('path');
 const compress = require('koa-compress')
 
+const session = require('./session');
 const message = require('./controller/message');
+const chat = require('./controller/chat');
+const pageRouter = require('./controller/page')
+const {session: CONFIG} = require('../config.json');
 
 const app = new Koa();
+app.keys = CONFIG.secretKeys;
 
 const router = Router();
 router.use('/',
-    message.routes()
+    message.routes(),
+    chat.routes()
 );
 
 // const cors = Cors({
@@ -25,9 +31,11 @@ router.use('/',
 
 app
     .use(compress())
+    .use(session(app))
     .use(bodyParser())
     .use(router.routes())
     .use(router.allowedMethods())
     .use(Static(path.resolve(__dirname, 'static')))
+    .use(pageRouter.routes())
 
 app.listen(8009);

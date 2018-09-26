@@ -6,8 +6,8 @@ exports.rejectHandler = function(ctx, message) {
     ctx.body = {message, success: false};
 }
 
-exports.successHandler = function(ctx, message) {
-    ctx.body = {message, success: true};
+exports.successHandler = function(ctx, message, result) {
+    ctx.body = {message, result, success: true};
 }
 
 exports.redirectHandler = function(ctx, path) {

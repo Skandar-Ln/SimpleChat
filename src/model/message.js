@@ -6,7 +6,8 @@ const Message = sequelize.define('message', {
     content: Sequelize.STRING,
     from: Sequelize.STRING,
     to: Sequelize.STRING,
-    isWithDraw: Sequelize.BOOLEAN
+    isWithDraw: Sequelize.BOOLEAN,
+    chatId: Sequelize.STRING
 });
 
 syncTable(Message);
