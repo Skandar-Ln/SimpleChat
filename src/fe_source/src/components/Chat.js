@@ -343,7 +343,7 @@ export default class Chat extends Component {
         return (
             <form onSubmit={this.handleSubmit}>
                 <div style={{position: 'relative'}}>
-                    <ContentInput onChange={this.handleChange} />
+                    <ContentInput value={this.state.input} onChange={this.handleChange} />
                     {/* <div style={{textAlign: 'right'}}>
                         短信通知<input checked={this.state.isPhoneNotice} onChange={this.handleChangePhone} type="checkbox" />
                     </div> */}

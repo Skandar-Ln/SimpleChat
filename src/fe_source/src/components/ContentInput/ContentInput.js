@@ -18,8 +18,10 @@ class ContentInput extends Component {
     }
 
     render() {
+        const {value} = this.props;
+console.log(value)
         return (
-            <input onPaste={this.handlePaste} type="text" value={this.state.input} onChange={this.props.onChange} className="Chat-input" />
+            <input value={value} onPaste={this.handlePaste} type="text" onChange={this.props.onChange} className="Chat-input" />
         );
     }
 }
