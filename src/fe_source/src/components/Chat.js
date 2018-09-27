@@ -4,6 +4,8 @@ import request from 'axios';
 import moment from 'moment';
 import _ from 'lodash';
 
+import ContentInput from './ContentInput';
+import MessageContent from './MessageContent';
 import './Chat.css';
 import personA from '../images/personA.png';
 import personB from '../images/personB.png';
@@ -49,7 +51,7 @@ export default class Chat extends Component {
         const chatId = this.chatId;
 
         // 滚到底
-        this.scrollToBottom();
+        // this.scrollToBottom();
 
         // 滚动事件
         // window.addEventListener('scroll', this.handleScroll);
@@ -322,7 +324,7 @@ export default class Chat extends Component {
                                    <div>
                                         <div className={`Chat-message${isSelf ? ' self' : ''}`}>
                                             { isSelf && item.withDraw ? <div className="Chat-withdraw" onClick={ () => this.handleWithdraw(item.id)}>撤回</div> :null}
-                                            {item.content}
+                                            <MessageContent content={item.content} type={item.type} />
                                         </div>
                                         {!isSelf || <div className="Chat-sender self">{item.from}</div>}
                                   </div>
@@ -341,7 +343,7 @@ export default class Chat extends Component {
         return (
             <form onSubmit={this.handleSubmit}>
                 <div style={{position: 'relative'}}>
-                    <input type="text" value={this.state.input} onChange={this.handleChange} className="Chat-input" ref={el => {this.input = el}} />
+                    <ContentInput onChange={this.handleChange} />
                     {/* <div style={{textAlign: 'right'}}>
                         短信通知<input checked={this.state.isPhoneNotice} onChange={this.handleChangePhone} type="checkbox" />
                     </div> */}

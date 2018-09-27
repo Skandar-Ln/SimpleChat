@@ -8,6 +8,7 @@ const compress = require('koa-compress')
 const session = require('./session');
 const message = require('./controller/message');
 const chat = require('./controller/chat');
+const service = require('./controller/service');
 const pageRouter = require('./controller/page')
 const {session: CONFIG} = require('../config.json');
 
@@ -17,7 +18,8 @@ app.keys = CONFIG.secretKeys;
 const router = Router();
 router.use('/',
     message.routes(),
-    chat.routes()
+    chat.routes(),
+    service.routes()
 );
 
 // const cors = Cors({

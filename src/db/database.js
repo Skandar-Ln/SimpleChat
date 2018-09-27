@@ -3,7 +3,7 @@ const {database: CONFIG} = require('../../config.json');
 
 let database = CONFIG.databaseName;
 
-if (process.env.NODE_ENV === 'dev') {
+if (process.env.NODE_ENV !== 'production') {
     database = 'chat_test';
 }
 
