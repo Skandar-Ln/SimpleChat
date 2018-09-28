@@ -35,6 +35,7 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-scripts": "1.1.1",
+    "react-zmage": "^0.4.0",
     "sequelize": "^4.33.2"
   },
   "devDependencies": {
