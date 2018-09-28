@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 import ContentInput from './ContentInput';
 import MessageContent from './MessageContent';
+import ImageUploader from './ToolBox/ImageUploader';
 import './Chat.css';
 import personA from '../images/personA.png';
 import personB from '../images/personB.png';
@@ -335,6 +336,8 @@ export default class Chat extends Component {
                 }
                 <br />
                 {this.renderInput()}
+                <br />
+                <ImageUploader />
             </div>
         );
     }

@@ -13,13 +13,13 @@ class ContentInput extends Component {
 
         if (item.kind === 'file') {
             const file = item.getAsFile();
-            uploadFile(chatId, file);
+            uploadFile(file);
         }
     }
 
     render() {
         const {value} = this.props;
-console.log(value)
+
         return (
             <input value={value} onPaste={this.handlePaste} type="text" onChange={this.props.onChange} className="Chat-input" />
         );
