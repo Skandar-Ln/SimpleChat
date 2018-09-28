@@ -17,7 +17,7 @@ class AsyncImg extends Component {
 
     render() {
         return (
-            <img src={this.state.url} />
+            <img style={{maxWidth: '100%'}} src={this.state.url} />
         );
     }
 }
