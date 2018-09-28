@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import request from 'axios';
-import Zmage from 'react-zmage'
+// import Zmage from 'react-zmage'
 import { SingleImgView } from 'react-imageview'
 import 'react-imageview/dist/react-imageview.min.css'
 
