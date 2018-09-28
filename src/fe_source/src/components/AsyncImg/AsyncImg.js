@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import request from 'axios';
+import Zmage from 'react-zmage'
 
 class AsyncImg extends Component {
     constructor(props) {
@@ -15,11 +16,21 @@ class AsyncImg extends Component {
         })
     }
 
+//     handleClick = e => {
+//         const url = this.state.url;
+
+//         var imgElem = new Image();
+//         imgElem.src = url;
+//         // document.body.appendChild(imgElem);
+// debugger
+//         // zoom.setup(imgElem);
+//     }
+
     render() {
         const url = this.state.url;
 
         return (
-            <a href={url}><img style={{maxWidth: '100%'}} src={url} /></a>
+            <Zmage style={{maxWidth: '100%'}} src={url} />
         );
     }
 }
