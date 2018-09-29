@@ -5,13 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "export NODE_ENV=dev && nodemon src/app.js",
-    "dev": "SET NODE_ENV=dev && node src/app.js",
+    "start": "export NODE_ENV=dev && nodemon server/app.js",
+    "dev": "SET NODE_ENV=dev && node server/app.js",
     "macDev": "export NODE_ENV=dev && node src/app.js",
-    "build-fe": "cd src/fe_source && npm run build && rm -rf ../static && mkdir ../static && cp -r build/* ../static",
-    "client-start": "cd src/fe_source && npm run start",
-    "client-build": "cd src/fe_source && npm run build",
-    "client-test": "cd src/fe_source && npm run test --env=jsdom"
+    "build-fe": "cd fe_source && npm run build && rm -rf ../static && mkdir ../static && cp -r build/* ../static",
+    "client-start": "cd fe_source && npm run start",
+    "client-build": "cd fe_source && npm run build",
+    "client-test": "cd fe_source && npm run test --env=jsdom"
   },
   "keywords": [],
   "author": "Skandar",
@@ -29,6 +29,18 @@
     "koa-static": "^4.0.2",
     "lodash": "^4.17.5",
     "mysql2": "^1.5.2",
-    "sequelize": "^4.33.2"
+    "sequelize": "^4.33.2",
+    "antd-mobile": "^2.2.5",
+    "moment": "^2.20.1",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-imageview": "^1.2.1",
+    "react-scripts": "1.1.1",
+    "react-zmage": "^0.4.0",
+    "source-map-explorer": "^1.6.0"
+  },
+  "devDependencies": {
+    "babel-plugin-import": "^1.9.1",
+    "react-app-rewired": "^1.6.2"
   }
 }
