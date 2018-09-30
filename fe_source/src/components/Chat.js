@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {List, InputItem, WhiteSpace, WingBlank, Button, Modal, Toast, Icon} from 'antd-mobile';
 import request from 'axios';
 import moment from 'moment';
-import _ from 'lodash';
+import last from 'lodash/last';
+import isEmpty from 'lodash/isEmpty';
 
 import ContentInput from './ContentInput';
 import MessageContent from './MessageContent';
@@ -25,7 +26,7 @@ export default class Chat extends Component {
     constructor(props) {
         super(props);
 
-        const chatId = _.last(window.location.pathname.split('/'));
+        const chatId = last(window.location.pathname.split('/'));
         this.chatId = chatId;
 
         // if (store[chatId]) {
@@ -156,29 +157,20 @@ export default class Chat extends Component {
             }
 
             const messages = data.result;
-            const lastNew = _.last(messages) || {};
-            const last = _.last(this.state.messages) || {};
+            const lastNew = last(messages) || {};
+            const lastOld = last(this.state.messages) || {};
 
-            if (lastNew.updatedAt === last.updatedAt && messages.length === this.state.messages.length) {
+            if (lastNew.updatedAt === lastOld.updatedAt && messages.length === this.state.messages.length) {
                 return;
             }
 
             this.setState({messages});
-            if (this.isPermitNotification && lastNew.createdAt !== last.createdAt && this.state.user !== lastNew.from) {
+            if (this.isPermitNotification && lastNew.createdAt !== lastOld.createdAt && this.state.user !== lastNew.from) {
                 new Notification(`来自${lastNew.from}的消息`, {
                     // body: lastNew.content,
                     icon: config.images[lastNew.from]
                 });
             }
-
-            // if (isFirst) {
-            //     const {user, key} = this.state;
-            //     store[chatId] = {
-            //         user,
-            //         key
-            //     }
-            //     localStorage.setItem('chatStore', JSON.stringify(store));
-            // }
         });
     }
 
@@ -214,7 +206,7 @@ export default class Chat extends Component {
             return this.inputUserNameAlert();
         }
 
-        if (_.isEmpty(input)) {
+        if (isEmpty(input)) {
             return;
         }
 
