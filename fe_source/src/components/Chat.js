@@ -7,7 +7,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import ContentInput from './ContentInput';
 import MessageContent from './MessageContent';
-import ImageUploader from './ToolBox/ImageUploader';
+import ToolBox from './ToolBox';
 import './Chat.css';
 import personA from '../images/personA.png';
 import personB from '../images/personB.png';
@@ -45,6 +45,7 @@ export default class Chat extends Component {
         pageCount: 1,
         isPhoneNotice: false,
         loadingImgUrl: '',
+        isToolBoxVisible: false
     }
 
     componentWillUnmount = () => {
@@ -255,6 +256,12 @@ export default class Chat extends Component {
         });
     }
 
+    handleToolBoxVisibleToggle = () => {
+        this.setState({
+            isToolBoxVisible: !this.state.isToolBoxVisible
+        });
+    }
+
     renderActivity() {
         return (
             null
@@ -285,7 +292,7 @@ export default class Chat extends Component {
     }
 
     renderChat() {
-        const {user, messages = []} = this.state;
+        const {user, messages = [], isToolBoxVisible} = this.state;
         const  TimeSpan = 3 * 60 * 1000;
         let time1 = null;
         let time2 = null;
@@ -346,19 +353,23 @@ export default class Chat extends Component {
                     {this.renderInput()}
                 </div>
                 <br />
-                <ImageUploader onImgUploading={this.handleImgUploading} />
+                <ToolBox isVisible={isToolBoxVisible} onImgUploading={this.handleImgUploading} />
             </div>
         );
     }
 
     renderInput() {
+        const isToolBoxVisible = this.state.isToolBoxVisible;
+
         return (
             <form onSubmit={this.handleSubmit}>
                 <div style={{position: 'relative'}}>
-                    <ContentInput value={this.state.input} onChange={this.handleChange} onImgUploading={this.handleImgUploading}/>
-                    {/* <div style={{textAlign: 'right'}}>
-                        短信通知<input checked={this.state.isPhoneNotice} onChange={this.handleChangePhone} type="checkbox" />
-                    </div> */}
+                    <div style={{paddingRight: '1.9rem'}}>
+                        <ContentInput value={this.state.input} onChange={this.handleChange} onImgUploading={this.handleImgUploading}/>
+                    </div>
+                    <div onClick={this.handleToolBoxVisibleToggle} style={{position: 'absolute', right: 0, top: 0}}>
+                        <i style={{fontSize: '1.6rem'}} className={`${isToolBoxVisible ? 'icon-minus' : 'icon-add'} iconfont`}></i>
+                    </div>
                 </div>
             </form>
         )
