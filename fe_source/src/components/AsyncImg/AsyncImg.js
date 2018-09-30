@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import request from 'axios';
 import Zmage from 'react-zmage'
-import { SingleImgView } from 'react-imageview'
-import 'react-imageview/dist/react-imageview.min.css'
+// import { SingleImgView } from 'react-imageview'
+// import 'react-imageview/dist/react-imageview.min.css'
 
 class AsyncImg extends Component {
     constructor(props) {
@@ -34,7 +34,7 @@ class AsyncImg extends Component {
         const url = this.state.url;
 
         return (
-            <Zmage style={{maxWidth: '100%'}} src={url} />
+            <Zmage style={{maxWidth: '100%', maxHeight: '12rem'}} src={url} />
             // <img onClick={this.handleClick} style={{maxWidth: '100%'}} src={url} />
         );
     }
