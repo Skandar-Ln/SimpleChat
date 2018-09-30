@@ -18,17 +18,17 @@ class AsyncImg extends Component {
         })
     }
 
-    handleClick = e => {
-        const url = this.state.url;
+    // handleClick = e => {
+    //     const url = this.state.url;
 
-        const imagelist = [url]
+    //     const imagelist = [url]
 
-        // 仅创建一个ImageView实例
-        SingleImgView.show({ 
-            imagelist, 
-            close: () => { SingleImgView.hide() } 
-        });
-    }
+    //     // 仅创建一个ImageView实例
+    //     SingleImgView.show({ 
+    //         imagelist, 
+    //         close: () => { SingleImgView.hide() } 
+    //     });
+    // }
 
     render() {
         const url = this.state.url;
