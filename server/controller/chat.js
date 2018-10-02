@@ -23,9 +23,9 @@ koaRouter.post('api/chat/public/create', async (ctx, next) => {
 
 koaRouter.post('api/chat/secret/create', async (ctx, next) => {
     const fields = ctx.request.fields || {};
-    let {key} = fields;
+    let {key, chatId} = fields;
 
-    const chatId = shortid.generate();
+    chatId = chatId || shortid.generate();
     key = key || util.generateRandomString();
 
     await Chat.create({

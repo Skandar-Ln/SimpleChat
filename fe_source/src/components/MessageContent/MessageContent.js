@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AsyncImg from '../AsyncImg';
 import startsWith from 'lodash/startsWith';
 
-const urlRegex = /\b\S+\.(com|wang|net|me|cn|fun)\S*\b/g;
+const urlRegex = /\b\S+\.(com|wang|net|me|cn|fun|org|io|im)\S*\b/g;
 
 const renderContent = content => {
     if (!urlRegex.test(content)) {
