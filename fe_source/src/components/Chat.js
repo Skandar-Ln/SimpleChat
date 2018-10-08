@@ -34,6 +34,7 @@ export default class Chat extends Component {
         //     this.state.key = store[chatId].key;
         // }
 
+        this.conentScrollBoxRef = React.createRef();
         this.isPermitNotification = false;
         this.handleImgUploading = this.handleImgUploading.bind(this);
     }
@@ -56,7 +57,7 @@ export default class Chat extends Component {
         const chatId = this.chatId;
 
         // 滚到底
-        // this.scrollToBottom();
+        this.scrollToBottom();
 
         // 滚动事件
         // window.addEventListener('scroll', this.handleScroll);
@@ -84,9 +85,8 @@ export default class Chat extends Component {
     }
 
     componentDidUpdate() {
-        this.scrollToBottom();
+        // this.scrollToBottom();
     }
-
      
     handleImgUploading(loadingImgUrl) {
         this.setState({
@@ -140,14 +140,20 @@ export default class Chat extends Component {
     }
 
     scrollToBottom = () => {
-        this.input && this.input.scrollIntoView({block: 'end'});
+        const conentScrollBox = this.conentScrollBoxRef.current;
+
+        if (!conentScrollBox) {
+            return;
+        }
+
+        conentScrollBox.scrollTop = conentScrollBox.scrollHeight;
     }
 
     getMessages(isFirst) {
         const chatId = this.chatId;
         // const key = this.state.key;
 
-        request.post('/api/message/list', {
+        return request.post('/api/message/list', {
             size: 10 * this.state.pageCount,
             chatId
         }).then(({data} = {}) => {
@@ -166,6 +172,7 @@ export default class Chat extends Component {
             }
 
             this.setState({messages});
+
             if (this.isPermitNotification && lastNew.createdAt !== lastOld.createdAt && this.state.user !== lastNew.from) {
                 new Notification(`来自${lastNew.from}的消息`, {
                     // body: lastNew.content,
@@ -218,8 +225,9 @@ export default class Chat extends Component {
             isPhoneNotice,
             content: input
         }).then(res => {
-            this.getMessages();
+            this.getMessages().then(this.scrollToBottom);
         });
+
         this.setState({input: '', isPhoneNotice: false});
     }
 
@@ -298,12 +306,12 @@ export default class Chat extends Component {
         let time2 = null;
         let showTime = true;
         const chatWrapStyle = {height: '100%'};
-        const msgWrapStyle = {height: '100%', paddingTop: '1rem', paddingBottom: isToolBoxVisible ? '9.5rem' : '2.5rem', boxSizing: 'border-box'};
+        const msgWrapStyle = {height: '100%', paddingTop: '1rem', paddingBottom: isToolBoxVisible ? '9.5rem' : '3rem', boxSizing: 'border-box'};
         return (
             <div style={chatWrapStyle}>
                 {this.renderActivity()}
                 <div style={msgWrapStyle}>
-                <div style={{overflow: 'auto', height: '100%'}}>
+                <div ref={this.conentScrollBoxRef} style={{overflow: 'auto', height: '100%'}}>
                 <p onClick={this.handleSeeMore} style={{color: '#aaa'}}>查看更多记录</p>
                 {
                     messages.map((item, index) => {
