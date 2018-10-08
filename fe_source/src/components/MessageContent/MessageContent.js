@@ -11,7 +11,7 @@ const renderContent = content => {
 
     const urledContnet = content.replace(urlRegex, function(match) {
         const a = document.createElement('a');
-        const href = startsWith(match, 'http') ? href : `//${match}`;
+        const href = startsWith(match, 'http') ? match : `//${match}`;
         a.setAttribute('href', href);
         a.setAttribute('target', '_blank');
         a.innerText = match;
