@@ -1,8 +1,18 @@
 import React, { Component } from 'react';
 import request from 'axios';
-import Zmage from 'react-zmage'
-// import { SingleImgView } from 'react-imageview'
-// import 'react-imageview/dist/react-imageview.min.css'
+// import Zmage from 'react-zmage'
+import { SingleImgView } from 'react-imageview';
+import 'react-imageview/dist/react-imageview.min.css';
+
+document.addEventListener('click', e => {
+    const className = e.target.className;
+
+    if (className === 'imagelist-item-img' || className === 'imagelist-item') {
+        SingleImgView.hide();
+    }
+});
+console.log('once')
+
 
 class AsyncImg extends Component {
     constructor(props) {
@@ -18,24 +28,28 @@ class AsyncImg extends Component {
         })
     }
 
-    // handleClick = e => {
-    //     const url = this.state.url;
+    handleClose = e => {
+        SingleImgView.hide();
+    }
 
-    //     const imagelist = [url]
+    handleClick = e => {
+        const url = this.state.url;
 
-    //     // 仅创建一个ImageView实例
-    //     SingleImgView.show({ 
-    //         imagelist, 
-    //         close: () => { SingleImgView.hide() } 
-    //     });
-    // }
+        const imagelist = [url]
+
+        // 仅创建一个ImageView实例
+        SingleImgView.show({ 
+            imagelist, 
+            close: this.handleClose
+        });
+    }
 
     render() {
         const url = this.state.url;
 
         return (
-            <Zmage style={{maxWidth: '100%', maxHeight: '12rem'}} src={url} />
-            // <img onClick={this.handleClick} style={{maxWidth: '100%'}} src={url} />
+            // <Zmage style={{maxWidth: '100%', maxHeight: '12rem'}} src={url} />
+            <img onClick={this.handleClick} style={{maxWidth: '100%', maxHeight: '12rem'}} src={url} />
         );
     }
 }
