@@ -8,7 +8,7 @@
     "start": "export NODE_ENV=dev && nodemon server/app.js",
     "dev": "SET NODE_ENV=dev && node server/app.js",
     "macDev": "export NODE_ENV=dev && node src/app.js",
-    "build-fe": "cd fe_source && npm run build && rm -rf ../static && mkdir ../static && cp -r build/* ../static",
+    "build-fe": "npm run client-build && rm -rf server/static && mkdir server/static && cp -r fe_source/build/* server/static",
     "client-start": "cd fe_source && npm run start",
     "client-build": "cd fe_source && npm run build",
     "client-test": "cd fe_source && npm run test --env=jsdom"
@@ -19,6 +19,7 @@
   "dependencies": {
     "@alicloud/sms-sdk": "^1.0.8",
     "ali-oss": "^4.11.2",
+    "antd-mobile": "^2.2.5",
     "axios": "^0.17.1",
     "chance": "^1.0.16",
     "koa": "^2.4.1",
@@ -28,15 +29,15 @@
     "koa-session": "^5.9.0",
     "koa-static": "^4.0.2",
     "lodash": "^4.17.5",
-    "mysql2": "^1.5.2",
-    "sequelize": "^4.33.2",
-    "antd-mobile": "^2.2.5",
     "moment": "^2.20.1",
+    "mysql2": "^1.5.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-imageview": "^1.2.1",
     "react-scripts": "1.1.1",
     "react-zmage": "^0.4.0",
+    "sequelize": "^4.33.2",
+    "shortid": "^2.2.13",
     "source-map-explorer": "^1.6.0"
   },
   "devDependencies": {

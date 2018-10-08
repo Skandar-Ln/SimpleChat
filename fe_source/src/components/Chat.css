@@ -26,9 +26,13 @@
     position: relative;
 }
 
-.Chat-message.self{
+.Chat-message.self, .Chat-message.self a{
     background-color: rgb(1, 118, 255);
     color: rgb(255, 255, 255);
+ }
+
+ .Chat-message a {
+     text-decoration: underline
  }
 
  .Chat-sender {

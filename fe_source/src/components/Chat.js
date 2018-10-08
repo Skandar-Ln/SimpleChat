@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import {List, InputItem, WhiteSpace, WingBlank, Button, Modal, Toast, Icon} from 'antd-mobile';
 import request from 'axios';
 import moment from 'moment';
-import _ from 'lodash';
+import last from 'lodash/last';
+import isEmpty from 'lodash/isEmpty';
 
 import ContentInput from './ContentInput';
 import MessageContent from './MessageContent';
-import ImageUploader from './ToolBox/ImageUploader';
+import ToolBox from './ToolBox';
 import './Chat.css';
 import personA from '../images/personA.png';
 import personB from '../images/personB.png';
@@ -25,7 +26,7 @@ export default class Chat extends Component {
     constructor(props) {
         super(props);
 
-        const chatId = _.last(window.location.pathname.split('/'));
+        const chatId = last(window.location.pathname.split('/'));
         this.chatId = chatId;
 
         // if (store[chatId]) {
@@ -44,6 +45,7 @@ export default class Chat extends Component {
         pageCount: 1,
         isPhoneNotice: false,
         loadingImgUrl: '',
+        isToolBoxVisible: false
     }
 
     componentWillUnmount = () => {
@@ -156,29 +158,20 @@ export default class Chat extends Component {
             }
 
             const messages = data.result;
-            const lastNew = _.last(messages) || {};
-            const last = _.last(this.state.messages) || {};
+            const lastNew = last(messages) || {};
+            const lastOld = last(this.state.messages) || {};
 
-            if (lastNew.updatedAt === last.updatedAt && messages.length === this.state.messages.length) {
+            if (lastNew.updatedAt === lastOld.updatedAt && messages.length === this.state.messages.length) {
                 return;
             }
 
             this.setState({messages});
-            if (this.isPermitNotification && lastNew.createdAt !== last.createdAt && this.state.user !== lastNew.from) {
+            if (this.isPermitNotification && lastNew.createdAt !== lastOld.createdAt && this.state.user !== lastNew.from) {
                 new Notification(`来自${lastNew.from}的消息`, {
                     // body: lastNew.content,
                     icon: config.images[lastNew.from]
                 });
             }
-
-            // if (isFirst) {
-            //     const {user, key} = this.state;
-            //     store[chatId] = {
-            //         user,
-            //         key
-            //     }
-            //     localStorage.setItem('chatStore', JSON.stringify(store));
-            // }
         });
     }
 
@@ -214,7 +207,7 @@ export default class Chat extends Component {
             return this.inputUserNameAlert();
         }
 
-        if (_.isEmpty(input)) {
+        if (isEmpty(input)) {
             return;
         }
 
@@ -263,6 +256,12 @@ export default class Chat extends Component {
         });
     }
 
+    handleToolBoxVisibleToggle = () => {
+        this.setState({
+            isToolBoxVisible: !this.state.isToolBoxVisible
+        });
+    }
+
     renderActivity() {
         return (
             null
@@ -293,7 +292,7 @@ export default class Chat extends Component {
     }
 
     renderChat() {
-        const {user, messages = []} = this.state;
+        const {user, messages = [], isToolBoxVisible} = this.state;
         const  TimeSpan = 3 * 60 * 1000;
         let time1 = null;
         let time2 = null;
@@ -354,19 +353,23 @@ export default class Chat extends Component {
                     {this.renderInput()}
                 </div>
                 <br />
-                <ImageUploader onImgUploading={this.handleImgUploading} />
+                <ToolBox isVisible={isToolBoxVisible} onImgUploading={this.handleImgUploading} />
             </div>
         );
     }
 
     renderInput() {
+        const isToolBoxVisible = this.state.isToolBoxVisible;
+
         return (
             <form onSubmit={this.handleSubmit}>
                 <div style={{position: 'relative'}}>
-                    <ContentInput value={this.state.input} onChange={this.handleChange} onImgUploading={this.handleImgUploading}/>
-                    {/* <div style={{textAlign: 'right'}}>
-                        短信通知<input checked={this.state.isPhoneNotice} onChange={this.handleChangePhone} type="checkbox" />
-                    </div> */}
+                    <div style={{paddingRight: '1.9rem'}}>
+                        <ContentInput value={this.state.input} onChange={this.handleChange} onImgUploading={this.handleImgUploading}/>
+                    </div>
+                    <div onClick={this.handleToolBoxVisibleToggle} style={{position: 'absolute', right: 0, top: 0}}>
+                        <i style={{fontSize: '1.6rem'}} className={`${isToolBoxVisible ? 'icon-minus' : 'icon-add'} iconfont`}></i>
+                    </div>
                 </div>
             </form>
         )

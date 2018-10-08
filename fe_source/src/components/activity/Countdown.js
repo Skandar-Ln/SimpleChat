@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import _ from 'lodash';
 import './Countdown.css';
 
 const endTime = '2018-03-01 18:40';

@@ -23,12 +23,31 @@ class ImageUploader extends Component {
 
     render() {
         return (
-            <input
-              ref={(input) => { if (input) { this.fileSelectorInput = input; } }}
-              type="file"
-              accept="image/*"
-              onChange={this.onFileChange}
-            />
+            <div style={{position: 'relative', width: '100%', height: '100%'}}>
+                <div style={{
+                    width: '100%',
+                    position: 'absolute',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                }}>
+                    <i style={{fontSize: '3rem', display: 'block'}} className="iconfont icon-image"></i>
+                    发送图片
+                </div>
+                <input
+                  ref={(input) => { if (input) { this.fileSelectorInput = input; } }}
+                  type="file"
+                  accept="image/*"
+                  onChange={this.onFileChange}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    opacity: 0,
+                  }}
+                />
+            </div>
         );
     }
 }

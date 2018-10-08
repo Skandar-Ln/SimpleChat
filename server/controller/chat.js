@@ -1,18 +1,18 @@
 const _ = require('lodash');
 const Sequelize = require('sequelize');
-const Chance = require('chance');
+const shortid = require('shortid');
 
 const Chat = require('../model/chat');
 const Router = require('koa-router');
 
-const util = require('./util');
+const controlUtil = require('./util');
+const util = require('../util/util');
 const auth = require('../util/auth');
 
 const koaRouter = Router();
-const chance = new Chance();
 
 koaRouter.post('api/chat/public/create', async (ctx, next) => {
-    const chatId = chance.string({length: 5});;
+    const chatId = shortid.generate();
 
     await Chat.create({
         chatId
@@ -22,8 +22,11 @@ koaRouter.post('api/chat/public/create', async (ctx, next) => {
 });
 
 koaRouter.post('api/chat/secret/create', async (ctx, next) => {
-    const chatId = chance.string({length: 5});;
-    const key = chance.string();
+    const fields = ctx.request.fields || {};
+    let {key, chatId} = fields;
+
+    chatId = chatId || shortid.generate();
+    key = key || util.generateRandomString();
 
     await Chat.create({
         chatId,
@@ -45,7 +48,7 @@ koaRouter.post('api/chat/auth', async (ctx, next) => {
             };
         }
 
-        return util.successHandler(ctx, '状态有效', {
+        return controlUtil.successHandler(ctx, '状态有效', {
             user: ctx.session[chatId].user
         });
     }
@@ -53,19 +56,15 @@ koaRouter.post('api/chat/auth', async (ctx, next) => {
     const isValid = await auth.isChatKeyValid(chatId, key);
 
     if (!isValid) {
-        return util.rejectHandler(ctx, '密码错误');
+        return controlUtil.rejectHandler(ctx, '密码错误');
     }
-
-    // if (!user) {
-    //     return util.rejectHandler(ctx, '无用户名');
-    // }
 
     ctx.session[chatId] = {
         isLogin: true,
         user
     };
 
-    util.successHandler(ctx, '登录成功', {user});
+    controlUtil.successHandler(ctx, '登录成功', {user});
 });
 
 module.exports = koaRouter;

@@ -26,10 +26,7 @@ class ContentInput extends Component {
         const {value} = this.props;
 
         return (
-            <div>
-                <input value={value} onPaste={this.handlePaste} type="text" onChange={this.props.onChange} className="Chat-input" />
-            
-            </div>
+            <input value={value} onPaste={this.handlePaste} type="text" onChange={this.props.onChange} className="Chat-input" />
         );
     }
 }
