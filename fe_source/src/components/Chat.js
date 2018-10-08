@@ -297,9 +297,13 @@ export default class Chat extends Component {
         let time1 = null;
         let time2 = null;
         let showTime = true;
+        const chatWrapStyle = {height: '100%'};
+        const msgWrapStyle = {height: '100%', paddingTop: '1rem', paddingBottom: isToolBoxVisible ? '9.5rem' : '2.5rem', boxSizing: 'border-box'};
         return (
-            <div>
+            <div style={chatWrapStyle}>
                 {this.renderActivity()}
+                <div style={msgWrapStyle}>
+                <div style={{overflow: 'auto', height: '100%'}}>
                 <p onClick={this.handleSeeMore} style={{color: '#aaa'}}>查看更多记录</p>
                 {
                     messages.map((item, index) => {
@@ -341,27 +345,25 @@ export default class Chat extends Component {
                         );
                     })
                 }
-                <br />
-                <div style={{ position: "relative" }}>
-                    {!!this.state.loadingImgUrl ? (<div style={{ width: "5rem", position: "absolute", right: "0", bottom: "2rem" }}>
-                        <img style={{ width: "100%" }} src={this.state.loadingImgUrl} />
-                        <div style={{ backgroundColor: "rgba(51, 47, 47, 0.63)", position: "absolute", height: "100%", width: "100%", left: "0", top: "0" }}></div>
-                        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
-                            <Icon type="loading" size="lg" color="#047" />
-                        </div>
-                    </div>) : null}
+                </div>
+              </div>
                     {this.renderInput()}
                 </div>
-                <br />
-                <ToolBox isVisible={isToolBoxVisible} onImgUploading={this.handleImgUploading} />
-            </div>
         );
     }
 
     renderInput() {
         const isToolBoxVisible = this.state.isToolBoxVisible;
-
+        const inputWrapStyle = {position: 'absolute', bottom: '1rem', width: '100%'}
         return (
+            <div style={inputWrapStyle}>
+            {!!this.state.loadingImgUrl ? (<div style={{ width: "5rem", position: "absolute", right: "0", bottom: "2rem" }}>
+                <img style={{ width: "100%" }} src={this.state.loadingImgUrl} />
+                <div style={{ backgroundColor: "rgba(51, 47, 47, 0.63)", position: "absolute", height: "100%", width: "100%", left: "0", top: "0" }}></div>
+                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
+                    <Icon type="loading" size="lg" color="#047" />
+                </div>
+            </div>) : null}
             <form onSubmit={this.handleSubmit}>
                 <div style={{position: 'relative'}}>
                     <div style={{paddingRight: '1.9rem'}}>
@@ -371,7 +373,9 @@ export default class Chat extends Component {
                         <i style={{fontSize: '1.6rem'}} className={`${isToolBoxVisible ? 'icon-minus' : 'icon-add'} iconfont`}></i>
                     </div>
                 </div>
+                <ToolBox isVisible={isToolBoxVisible} onImgUploading={this.handleImgUploading} />                
             </form>
+        </div>
         )
     }
 
