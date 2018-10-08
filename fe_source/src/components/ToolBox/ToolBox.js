@@ -17,8 +17,11 @@ class ToolBox extends Component {
         return (
             <div style={{
                 transition: 'height 0.3s',
-                height: isVisible ? '' : 0,
-                overflow: 'hidden'
+                paddingTop: '0.5rem',
+                boxSizing: 'border-box',
+                display: isVisible ? 'block' : 'none',
+                overflow: 'hidden',
+                backgroundColor: 'white'
             }}>
                 <Grid
                     data={components}

@@ -3,7 +3,10 @@
   height: 100%;
   background-color: rgb(255, 255, 255);
 }
-
+.App-main {
+  height: 100%;
+  position: relative;
+}
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 80px;
