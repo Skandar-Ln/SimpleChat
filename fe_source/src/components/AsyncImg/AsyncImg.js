@@ -4,15 +4,25 @@ import request from 'axios';
 import { SingleImgView } from 'react-imageview';
 import 'react-imageview/dist/react-imageview.min.css';
 
+let comboCount = 0;
+
 document.addEventListener('click', e => {
     const className = e.target.className;
 
     if (className === 'imagelist-item-img' || className === 'imagelist-item') {
-        SingleImgView.hide();
+        const thisCombo = ++comboCount;
+
+        setTimeout(() => {
+            if (comboCount < 2) {
+                SingleImgView.hide();
+            }
+
+            if (thisCombo === comboCount) {
+                comboCount = 0;
+            }
+        }, 200);
     }
 });
-console.log('once')
-
 
 class AsyncImg extends Component {
     constructor(props) {

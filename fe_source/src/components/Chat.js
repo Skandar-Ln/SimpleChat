@@ -85,7 +85,7 @@ export default class Chat extends Component {
     }
 
     componentDidUpdate() {
-        // this.scrollToBottom();
+        this.scrollToBottom();
     }
      
     handleImgUploading(loadingImgUrl) {
@@ -225,7 +225,7 @@ export default class Chat extends Component {
             isPhoneNotice,
             content: input
         }).then(res => {
-            this.getMessages().then(this.scrollToBottom);
+            this.getMessages();
         });
 
         this.setState({input: '', isPhoneNotice: false});
