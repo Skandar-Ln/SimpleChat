@@ -24,9 +24,9 @@ const renderContent = content => {
     );
 }
 
-export default function({content = '', type}) {
+export default function({content = '', type, onImgLoad}) {
     if (type === 'img') {
-        return <AsyncImg fileName={content} />
+        return <AsyncImg onLoad={onImgLoad} fileName={content} />
     }
 
     return <span style={{

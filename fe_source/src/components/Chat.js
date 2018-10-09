@@ -93,6 +93,11 @@ export default class Chat extends Component {
             loadingImgUrl,
         });
     }
+
+    handleImgLoad = () => {
+        this.scrollToBottom();
+    }
+
     start() {
         this.getMessages(true);
         if (!this.interval) {
@@ -344,7 +349,7 @@ export default class Chat extends Component {
                                    <div>
                                         <div className={`Chat-message${isSelf ? ' self' : ''}`}>
                                             { isSelf && item.withDraw ? <div className="Chat-withdraw" onClick={ () => this.handleWithdraw(item.id)}>撤回</div> :null}
-                                            <MessageContent content={item.content} type={item.type} />
+                                            <MessageContent onImgLoad={this.handleImgLoad} content={item.content} type={item.type} />
                                         </div>
                                         {!isSelf || <div className="Chat-sender self">{item.from}</div>}
                                   </div>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import request from 'axios';
 // import Zmage from 'react-zmage'
 import { SingleImgView } from 'react-imageview';
+import {Icon} from 'antd-mobile';
 import 'react-imageview/dist/react-imageview.min.css';
 
 let comboCount = 0;
@@ -34,7 +35,14 @@ class AsyncImg extends Component {
         request.post('/api/service/oss/get', {
             fileName
         }).then(res => {
-            this.setState({url: res.data.url});
+            const url = res.data.url;
+            const img = new Image();
+            img.src = url;
+
+            img.onload = () => {
+                // this.props.onLoad && this.props.onLoad(url);
+                this.setState({url});
+            };
         })
     }
 
@@ -58,8 +66,8 @@ class AsyncImg extends Component {
         const url = this.state.url;
 
         return (
-            // <Zmage style={{maxWidth: '100%', maxHeight: '12rem'}} src={url} />
-            <img onClick={this.handleClick} style={{maxWidth: '100%', maxHeight: '12rem'}} src={url} />
+            url ? <img onLoad={this.props.onLoad} onClick={this.handleClick} style={{maxWidth: '100%', maxHeight: '12rem'}} src={url} />
+                : <Icon type="loading" />
         );
     }
 }
