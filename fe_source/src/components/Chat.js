@@ -278,7 +278,7 @@ export default class Chat extends Component {
 
     renderLogin() {
         return (
-            <div style={{marginTop: "10%"}}>
+            <div style={{paddingTop: "10%"}}>
                 <WingBlank>
                     <InputItem onChange={this.handleUserChange}>昵称</InputItem>
                     <WhiteSpace />
@@ -311,7 +311,7 @@ export default class Chat extends Component {
             <div style={chatWrapStyle}>
                 {this.renderActivity()}
                 <div style={msgWrapStyle}>
-                <div ref={this.conentScrollBoxRef} style={{overflow: 'auto', height: '100%'}}>
+                <div ref={this.conentScrollBoxRef} style={{overflow: 'auto', height: '100%', padding: '0 0.5rem'}}>
                 <p onClick={this.handleSeeMore} style={{color: '#aaa'}}>查看更多记录</p>
                 {
                     messages.map((item, index) => {
