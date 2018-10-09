@@ -179,7 +179,7 @@ export default class Chat extends Component {
             this.setState({messages});
 
             if (this.isPermitNotification && lastNew.createdAt !== lastOld.createdAt && this.state.user !== lastNew.from) {
-                new Notification(`来自${lastNew.from}的消息`, {
+                new Notification(`You've got a notification`, {
                     // body: lastNew.content,
                     icon: config.images[lastNew.from]
                 });
