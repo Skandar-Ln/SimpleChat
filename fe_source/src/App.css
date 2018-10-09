@@ -29,8 +29,8 @@
 
 .App-main {
   max-width: 400px;
-  /* width: 90%; */
-  /* display: inline-block; */
+  width: 100%;
+  display: inline-block;
 }
 
 @keyframes App-logo-spin {
