@@ -127,7 +127,7 @@ const authedRouter = Router();
 
 authedRouter
     .use('api/message', (ctx, next) => {
-        const fields = ctx.request.fields || {};
+        const fields = ctx.request.fields || ctx.request.query || {};
         const {page = 1, size = 999, chatId = '', updateAt} = fields;
         const {isLogin} = ctx.session[chatId] || {};
 
