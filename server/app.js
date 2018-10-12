@@ -32,7 +32,7 @@ router.use('/',
 // const session = Session(app);
 
 app
-    .use(compress())
+    // .use(compress())
     .use(session(app))
     .use(bodyParser())
     .use(router.routes())

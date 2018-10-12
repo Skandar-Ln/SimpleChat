@@ -4,9 +4,10 @@ import request from 'axios';
 import moment from 'moment';
 import last from 'lodash/last';
 import isEmpty from 'lodash/isEmpty';
+import {map} from 'san-update';
 
 import ContentInput from './ContentInput';
-import MessageContent from './MessageContent';
+import MessageContainer from './MessageContainer';
 import ToolBox from './ToolBox';
 import './Chat.css';
 import personA from '../images/personA.png';
@@ -62,6 +63,13 @@ export default class Chat extends Component {
         // 滚动事件
         // window.addEventListener('scroll', this.handleScroll);
 
+        // const evtSource = new EventSource('/api/stream');
+
+        // evtSource.addEventListener('message', function (event) {
+        //     const data = event.data;
+        //      console.log(data);
+        //   }, false);
+
         // 初始
         request.post('/api/chat/auth', {
             chatId
@@ -98,13 +106,53 @@ export default class Chat extends Component {
         this.scrollToBottom();
     }
 
+    // 初始事件
     start() {
-        this.getMessages(true);
-        if (!this.interval) {
-            this.interval = setInterval(() => {
-                this.getMessages();
-            }, 1000);
-        }
+        // this.getMessages(true);
+        // if (!this.interval) {
+        //     this.interval = setInterval(() => {
+        //         this.getMessages();
+        //     }, 1000);
+        // }
+
+        const evtSource = new EventSource('/api/message/events');
+
+        evtSource.onerror = () => {
+            this.setState({messages: []});
+            console.log("EventSource failed.");
+        };
+
+        evtSource.onmessage = evt => {
+             let data = JSON.parse(evt.data);
+             if (!Array.isArray(data)) {
+                data = [data];
+             }
+
+             this.setState({
+                 messages: [
+                     ...this.state.messages,
+                     ...data
+                 ]
+             })
+        };
+
+        evtSource.addEventListener('withdraw', evt => {
+            let {id} = JSON.parse(evt.data);
+
+            const messages = this.state.messages.map(item => {
+                if (item.id === id) {
+                    return {
+                        ...item,
+                        isWithDraw: true
+                    };
+                }
+
+                return item;
+            })
+            this.setState({
+                messages
+            })
+       });
     }
 
     stop() {
@@ -229,8 +277,6 @@ export default class Chat extends Component {
             chatId,
             isPhoneNotice,
             content: input
-        }).then(res => {
-            this.getMessages();
         });
 
         this.setState({input: '', isPhoneNotice: false});
@@ -248,14 +294,6 @@ export default class Chat extends Component {
         this.setState({pageCount: this.state.pageCount + 1}, this.getMessages);
     }
 
-    handleWithdraw = id => {
-        request.post('/api/message/withdraw', {id}).then(res => {
-            if (!res.data.success) {
-                alert(res.data.message);
-            }
-            this.getMessages();
-        });
-    }
     handleUserChange = e => {
 
         this.setState({
@@ -306,62 +344,18 @@ export default class Chat extends Component {
 
     renderChat() {
         const {user, messages = [], isToolBoxVisible} = this.state;
-        const  TimeSpan = 3 * 60 * 1000;
-        let time1 = null;
-        let time2 = null;
-        let showTime = true;
+
         const chatWrapStyle = {height: '100%'};
         const msgWrapStyle = {height: '100%', paddingTop: '1rem', paddingBottom: isToolBoxVisible ? '9.5rem' : '3rem', boxSizing: 'border-box'};
         return (
             <div style={chatWrapStyle}>
-                {this.renderActivity()}
                 <div style={msgWrapStyle}>
                 <div ref={this.conentScrollBoxRef} style={{overflow: 'auto', height: '100%', padding: '0 0.5rem'}}>
-                <p onClick={this.handleSeeMore} style={{color: '#aaa'}}>查看更多记录</p>
-                {
-                    messages.map((item, index) => {
-                        const isSelf = user === item.from;
-                        moment().subtract(2, 'minutes').isBefore(item.createdAt) ? item.withDraw = true : item.withDraw = false;
-                        if(index > 0) {
-                             time1 = item.createdAt;
-                             time2 = messages[index - 1].createdAt;
-                             moment(time1).subtract(3, 'minutes').isBefore(time2) ? (showTime = false) : (showTime = true);
-                        };
-                        return (
-                            <li
-                                style={{
-                                    textAlign: isSelf ? 'right' : 'left',
-                                    marginBottom: 12,
-                                    position:'relative'
-                                }}
-                                key={item.id}
-                            >  
-                            { showTime ? 
-                                <div style={{textAlign:'center'}}>
-                                    <div className="Chat-time-remindner">
-                                        {[moment(item.createdAt).calendar()]}
-                                    </div>
-                                </div> : null }
-                            {isSelf || (item.isWithDraw || <div className="Chat-sender">{item.from}</div>)}
-                                {item.isWithDraw ? 
-                                   <div  className="Chat-withdraw-reminder" >{isSelf ? "你已撤回一条消息" : `${item.from}已撤回一条消息`}</div> 
-                                                 : 
-                                   <div>
-                                        <div className={`Chat-message${isSelf ? ' self' : ''}`}>
-                                            { isSelf && item.withDraw ? <div className="Chat-withdraw" onClick={ () => this.handleWithdraw(item.id)}>撤回</div> :null}
-                                            <MessageContent onImgLoad={this.handleImgLoad} content={item.content} type={item.type} />
-                                        </div>
-                                        {!isSelf || <div className="Chat-sender self">{item.from}</div>}
-                                  </div>
-                                }
-                            </li>
-                        );
-                    })
-                }
+                    <MessageContainer user={user} messages={messages} />
                 </div>
-              </div>
-                    {this.renderInput()}
                 </div>
+                {this.renderInput()}
+            </div>
         );
     }
 
