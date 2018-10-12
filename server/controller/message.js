@@ -40,8 +40,8 @@ koaRouter.post('api/message/list', async (ctx, next) => {
 });
 
 koaRouter.get('api/message/events', async (ctx, next) => {
-    const fields = ctx.request.fields || {};
-    const {chatId = ''} = fields;
+    const query = ctx.request.query || {};
+    const {chatId = ''} = query;
 
     const body = ctx.body = sse();
 

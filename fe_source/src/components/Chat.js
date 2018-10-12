@@ -107,6 +107,8 @@ export default class Chat extends Component {
 
     // 初始事件
     start() {
+        const chatId = this.chatId;
+
         // this.getMessages(true);
         // if (!this.interval) {
         //     this.interval = setInterval(() => {
@@ -114,7 +116,7 @@ export default class Chat extends Component {
         //     }, 1000);
         // }
 
-        const evtSource = new EventSource('/api/message/events');
+        const evtSource = new EventSource(`/api/message/events?chatId=${chatId}`);
 
         evtSource.onerror = () => {
             this.setState({messages: []});
