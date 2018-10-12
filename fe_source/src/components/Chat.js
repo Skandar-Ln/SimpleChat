@@ -4,7 +4,6 @@ import request from 'axios';
 import moment from 'moment';
 import last from 'lodash/last';
 import isEmpty from 'lodash/isEmpty';
-import {map} from 'san-update';
 
 import ContentInput from './ContentInput';
 import MessageContainer from './MessageContainer';
