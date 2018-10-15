@@ -9,7 +9,9 @@ class MessageContainer extends Component {
     state = {}
 
     handleWithdraw = id => {
-        request.post('/api/message/withdraw', {id}).then(res => {
+        const chatId = this.props.chatId;
+
+        request.post('/api/message/withdraw', {id, chatId}).then(res => {
             if (!res.data.success) {
                 alert(res.data.message);
             }

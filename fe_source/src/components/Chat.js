@@ -345,6 +345,7 @@ export default class Chat extends Component {
 
     renderChat() {
         const {user, messages = [], isToolBoxVisible} = this.state;
+        const chatId = this.chatId;
 
         const chatWrapStyle = {height: '100%'};
         const msgWrapStyle = {height: '100%', paddingTop: '1rem', paddingBottom: isToolBoxVisible ? '9.5rem' : '3rem', boxSizing: 'border-box'};
@@ -352,7 +353,7 @@ export default class Chat extends Component {
             <div style={chatWrapStyle}>
                 <div style={msgWrapStyle}>
                 <div ref={this.conentScrollBoxRef} style={{overflow: 'auto', height: '100%', padding: '0 0.5rem'}}>
-                    <MessageContainer user={user} messages={messages} />
+                    <MessageContainer chatId={chatId} user={user} messages={messages} />
                 </div>
                 </div>
                 {this.renderInput()}
