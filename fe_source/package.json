@@ -24,6 +24,6 @@
     "test": "react-app-rewiredtest --env=jsdom",
     "eject": "react-app-rewired eject"
   },
-  "proxy1": "http://localhost:8009",
-  "proxy": "https://chat.bulibuli.wang"
+  "proxy": "http://localhost:8009",
+  "proxy1": "https://chat.bulibuli.wang"
 }

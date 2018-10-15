@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import MessageContent from '../MessageContent';
 import request from 'axios';
 import moment from 'moment';
+import {Icon} from 'antd-mobile';
+import _ from 'lodash';
 
 class MessageContainer extends Component {
     state = {}
@@ -23,6 +25,7 @@ class MessageContainer extends Component {
 
         return (
             <div>
+                {_.isEmpty(messages) && <Icon type="loading" />}
                 {
                     messages.map((item, index) => {
                         const isSelf = user === item.from;
