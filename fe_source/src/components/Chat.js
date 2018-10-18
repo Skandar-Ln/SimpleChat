@@ -117,10 +117,11 @@ export default class Chat extends Component {
         // }
 
         const evtSource = new EventSource(`/api/message/events?chatId=${chatId}`);
+        console.log("EventSource start." + new Date());
 
         evtSource.onerror = () => {
             this.setState({messages: []});
-            console.log("EventSource failed.");
+            console.log("EventSource failed." + new Date());
         };
 
         evtSource.onmessage = evt => {
@@ -278,6 +279,11 @@ export default class Chat extends Component {
             chatId,
             isPhoneNotice,
             content: input
+        }).then(({data} = {}) => {
+            if (data.success === false) {
+                document.write(data.message);
+                location.reload();
+            }
         });
 
         this.setState({input: '', isPhoneNotice: false});
