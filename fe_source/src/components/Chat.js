@@ -183,7 +183,7 @@ export default class Chat extends Component {
                                     isLogin: true,
                                     user: res.data.result.user
                                 })
-                                this.start();
+
                                 resolve();
                                 Toast.info('设置成功', 1);
                             }
@@ -282,7 +282,7 @@ export default class Chat extends Component {
         }).then(({data} = {}) => {
             if (data.success === false) {
                 document.write(data.message);
-                location.reload();
+                window.location.reload();
             }
         });
 
