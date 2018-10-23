@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import {Grid} from 'antd-mobile';
 
 import ImageUploader from './ImageUploader';
+import FileUploader from './FileUploader.js';
 
-const components = [ImageUploader];
+const components = [ImageUploader, FileUploader];
 
 class ToolBox extends Component {
     constructor(props) {

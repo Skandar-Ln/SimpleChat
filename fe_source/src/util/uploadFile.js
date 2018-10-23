@@ -31,9 +31,15 @@ export default async function (file) {
 
     return new Promise((resolve, reject) => {
         client.multipartUpload(storeAs, file).then(function (result) {
+            const match = result.name.match(/\.(\w+)$/);
+            let type = match ? match[1] : '';
+            if (['jpg', 'jpeg', 'png', 'svg', 'gif'].indexOf(type) > -1) {
+                type = 'img';
+            }
+
             request.post('/api/message/create', {
                 chatId,
-                type: 'img',
+                type,
                 content: result.name
             }).then(res => {
                 resolve(res.data);

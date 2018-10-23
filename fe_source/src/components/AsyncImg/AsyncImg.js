@@ -33,7 +33,8 @@ class AsyncImg extends Component {
         const fileName = props.fileName;
 
         request.post('/api/service/oss/get', {
-            fileName
+            fileName,
+            type: 'img'
         }).then(res => {
             const url = res.data.url;
             const img = new Image();
