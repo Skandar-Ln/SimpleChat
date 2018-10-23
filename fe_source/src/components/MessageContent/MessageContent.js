@@ -26,7 +26,7 @@ const renderContent = content => {
     );
 }
 
-export default function({content = '', type, onImgLoad}) {
+export default function({content = '', type, onContentLoad}) {
     if (!type) {
         return <span style={{
             wordBreak: 'break-word',
@@ -35,7 +35,7 @@ export default function({content = '', type, onImgLoad}) {
     }
 
     if (type === 'img') {
-        return <AsyncImg onLoad={onImgLoad} fileName={content} />
+        return <AsyncImg onLoad={onContentLoad} fileName={content} />
     }
 
     return <AsyncFile fileName={content} />

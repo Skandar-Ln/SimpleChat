@@ -101,7 +101,7 @@ export default class Chat extends Component {
         });
     }
 
-    handleImgLoad = () => {
+    handleContentLoad = () => {
         this.scrollToBottom();
     }
 
@@ -359,7 +359,7 @@ export default class Chat extends Component {
             <div style={chatWrapStyle}>
                 <div style={msgWrapStyle}>
                 <div ref={this.conentScrollBoxRef} style={{overflow: 'auto', height: '100%', padding: '0 0.5rem'}}>
-                    <MessageContainer chatId={chatId} user={user} messages={messages} />
+                    <MessageContainer onContentLoad={this.handleContentLoad} chatId={chatId} user={user} messages={messages} />
                 </div>
                 </div>
                 {this.renderInput()}

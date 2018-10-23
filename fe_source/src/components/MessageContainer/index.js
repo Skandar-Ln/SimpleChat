@@ -19,7 +19,7 @@ class MessageContainer extends Component {
     }
 
     render() {
-        const {user, messages = []} = this.props;
+        const {user, messages = [], onContentLoad} = this.props;
 
         let time1 = null;
         let time2 = null;
@@ -59,7 +59,7 @@ class MessageContainer extends Component {
                                 <div>
                                         <div className={`Chat-message${isSelf ? ' self' : ''}`}>
                                             { isSelf && item.withDraw ? <div className="Chat-withdraw" onClick={ () => this.handleWithdraw(item.id)}>撤回</div> :null}
-                                            <MessageContent onImgLoad={this.handleImgLoad} content={item.content} type={item.type} />
+                                            <MessageContent onContentLoad={onContentLoad} content={item.content} type={item.type} />
                                         </div>
                                         {!isSelf || <div className="Chat-sender self">{item.from}</div>}
                                 </div>
