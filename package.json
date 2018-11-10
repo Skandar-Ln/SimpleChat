@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "init": "npm i --registry=https://registry.npm.taobao.org && cd fe_source && npm i --registry=https://registry.npm.taobao.org",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "export NODE_ENV=dev && nodemon server/app.js",
+    "start": "export NODE_ENV=production && node server/app.js",
     "dev": "SET NODE_ENV=dev && node server/app.js",
     "macDev": "export NODE_ENV=dev && node src/app.js",
     "build-fe": "npm run client-build && rm -rf server/static && mkdir server/static && cp -r fe_source/build/* server/static",
