@@ -4,6 +4,7 @@ import request from 'axios';
 import moment from 'moment';
 import last from 'lodash/last';
 import isEmpty from 'lodash/isEmpty';
+import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill';
 
 import ContentInput from './ContentInput';
 import MessageContainer from './MessageContainer';
@@ -21,6 +22,7 @@ const config = {
 };
 
 // const store = JSON.parse(localStorage.getItem('chatStore')) || {};
+const EventSource = NativeEventSource || EventSourcePolyfill;
 
 export default class Chat extends Component {
     constructor(props) {

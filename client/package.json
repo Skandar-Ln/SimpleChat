@@ -3,16 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "antd-mobile": "^2.2.5",
+    "babel-plugin-import": "^1.9.1",
+    "event-source-polyfill": "^1.0.4",
+    "moment": "^2.20.1",
     "react": "^16.6.3",
+    "react-app-rewired": "^1.6.2",
     "react-dom": "^16.6.3",
     "react-scripts": "2.1.1",
-    "antd-mobile": "^2.2.5",
-    "moment": "^2.20.1",
+    "react-zmage": "^0.4.0",
     "source-map-explorer": "^1.6.0",
-    "url-regex": "^4.1.1",
-    "babel-plugin-import": "^1.9.1",
-    "react-app-rewired": "^1.6.2",
-    "react-zmage": "^0.4.0"
+    "url-regex": "^4.1.1"
   },
   "scripts": {
     "analyze": "source-map-explorer build/static/js/main.*",
