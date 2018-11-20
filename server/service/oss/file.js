@@ -5,7 +5,7 @@ const client = new OSS(oss.client);
 
 const expires = 60 * 60 * 24;
 const defaultOpt = {
-    isThumb: true
+    // isThumb: true
 }
 
 const getDownloadUrl = (fileName, opt) => {
