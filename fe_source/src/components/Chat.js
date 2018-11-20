@@ -34,6 +34,7 @@ export default class Chat extends Component {
         //     this.state.key = store[chatId].key;
         // }
 
+        this.conentScrollBoxRef = React.createRef();
         this.isPermitNotification = false;
         this.handleImgUploading = this.handleImgUploading.bind(this);
     }
@@ -56,7 +57,7 @@ export default class Chat extends Component {
         const chatId = this.chatId;
 
         // 滚到底
-        // this.scrollToBottom();
+        this.scrollToBottom();
 
         // 滚动事件
         // window.addEventListener('scroll', this.handleScroll);
@@ -86,13 +87,17 @@ export default class Chat extends Component {
     componentDidUpdate() {
         this.scrollToBottom();
     }
-
      
     handleImgUploading(loadingImgUrl) {
         this.setState({
             loadingImgUrl,
         });
     }
+
+    handleImgLoad = () => {
+        this.scrollToBottom();
+    }
+
     start() {
         this.getMessages(true);
         if (!this.interval) {
@@ -140,14 +145,20 @@ export default class Chat extends Component {
     }
 
     scrollToBottom = () => {
-        this.input && this.input.scrollIntoView({block: 'end'});
+        const conentScrollBox = this.conentScrollBoxRef.current;
+
+        if (!conentScrollBox) {
+            return;
+        }
+
+        conentScrollBox.scrollTop = conentScrollBox.scrollHeight;
     }
 
     getMessages(isFirst) {
         const chatId = this.chatId;
         // const key = this.state.key;
 
-        request.post('/api/message/list', {
+        return request.post('/api/message/list', {
             size: 10 * this.state.pageCount,
             chatId
         }).then(({data} = {}) => {
@@ -166,8 +177,9 @@ export default class Chat extends Component {
             }
 
             this.setState({messages});
+
             if (this.isPermitNotification && lastNew.createdAt !== lastOld.createdAt && this.state.user !== lastNew.from) {
-                new Notification(`来自${lastNew.from}的消息`, {
+                new Notification(`You've got a notification`, {
                     // body: lastNew.content,
                     icon: config.images[lastNew.from]
                 });
@@ -220,6 +232,7 @@ export default class Chat extends Component {
         }).then(res => {
             this.getMessages();
         });
+
         this.setState({input: '', isPhoneNotice: false});
     }
 
@@ -270,7 +283,7 @@ export default class Chat extends Component {
 
     renderLogin() {
         return (
-            <div style={{marginTop: "10%"}}>
+            <div style={{paddingTop: "10%"}}>
                 <WingBlank>
                     <InputItem onChange={this.handleUserChange}>昵称</InputItem>
                     <WhiteSpace />
@@ -298,12 +311,12 @@ export default class Chat extends Component {
         let time2 = null;
         let showTime = true;
         const chatWrapStyle = {height: '100%'};
-        const msgWrapStyle = {height: '100%', paddingTop: '1rem', paddingBottom: isToolBoxVisible ? '9.5rem' : '2.5rem', boxSizing: 'border-box'};
+        const msgWrapStyle = {height: '100%', paddingTop: '1rem', paddingBottom: isToolBoxVisible ? '9.5rem' : '3rem', boxSizing: 'border-box'};
         return (
             <div style={chatWrapStyle}>
                 {this.renderActivity()}
                 <div style={msgWrapStyle}>
-                <div style={{overflow: 'auto', height: '100%'}}>
+                <div ref={this.conentScrollBoxRef} style={{overflow: 'auto', height: '100%', padding: '0 0.5rem'}}>
                 <p onClick={this.handleSeeMore} style={{color: '#aaa'}}>查看更多记录</p>
                 {
                     messages.map((item, index) => {
@@ -336,7 +349,7 @@ export default class Chat extends Component {
                                    <div>
                                         <div className={`Chat-message${isSelf ? ' self' : ''}`}>
                                             { isSelf && item.withDraw ? <div className="Chat-withdraw" onClick={ () => this.handleWithdraw(item.id)}>撤回</div> :null}
-                                            <MessageContent content={item.content} type={item.type} />
+                                            <MessageContent onImgLoad={this.handleImgLoad} content={item.content} type={item.type} />
                                         </div>
                                         {!isSelf || <div className="Chat-sender self">{item.from}</div>}
                                   </div>
