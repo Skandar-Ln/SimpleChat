@@ -28,7 +28,7 @@ class FileUploader extends Component {
                     top: '50%',
                     transform: 'translateY(-50%)',
                 }}>
-                    <i style={{fontSize: '3rem', display: 'block'}} className="iconfont icon-file"></i>
+                    <i style={{fontSize: '2.6rem', display: 'block'}} className="iconfont icon-file"></i>
                     发送文件
                 </div>
                 <input
