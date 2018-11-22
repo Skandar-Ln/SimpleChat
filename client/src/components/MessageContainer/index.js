@@ -57,7 +57,7 @@ class MessageContainer extends Component {
                                 <div  className="Chat-withdraw-reminder" >{isSelf ? "你已撤回一条消息" : `${item.from}已撤回一条消息`}</div> 
                                                 : 
                                 <div>
-                                        <div className={`Chat-message${isSelf ? ' self' : ''}`}>
+                                        <div className={`Chat-message${isSelf ? ' self' : ''}`} style={{backgroundColor: item.type == 'img' ? 'transparent' : '#3c95fd'}}>
                                             { isSelf && item.withDraw ? <div className="Chat-withdraw" onClick={ () => this.handleWithdraw(item.id)}>撤回</div> :null}
                                             <MessageContent onContentLoad={onContentLoad} content={item.content} type={item.type} />
                                         </div>

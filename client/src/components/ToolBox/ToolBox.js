@@ -3,8 +3,9 @@ import {Grid} from 'antd-mobile';
 
 import ImageUploader from './ImageUploader';
 import FileUploader from './FileUploader.js';
+import CreateNewRoom from './CreateNewRoom.js';
 
-const components = [ImageUploader, FileUploader];
+const components = [ImageUploader, FileUploader, CreateNewRoom];
 
 class ToolBox extends Component {
     constructor(props) {

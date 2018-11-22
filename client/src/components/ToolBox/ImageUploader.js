@@ -30,7 +30,7 @@ class ImageUploader extends Component {
                     top: '50%',
                     transform: 'translateY(-50%)',
                 }}>
-                    <i style={{fontSize: '3rem', display: 'block'}} className="iconfont icon-image"></i>
+                    <i style={{fontSize: '2.6rem', display: 'block'}} className="iconfont icon-image"></i>
                     发送图片
                 </div>
                 <input
