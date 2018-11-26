@@ -461,13 +461,18 @@ export default class Chat extends Component {
 
    getRoomName() {
     // 从查询字符串中红获取房间名
-    return window.location.search.split('=')[1];
+    const roomName = window.location.search.split('=')[1];
+    if (roomName) {
+        return decodeURIComponent(roomName)
+    };
+    return null;
    }
 
     renderChat() {
         const {user, messages = [], isToolBoxVisible} = this.state;
         const chatId = this.chatId;
         const roomName = this.getRoomName();
+        console.log('roomName',roomName)
         const chatWrapStyle = {height: '100%', padding:'0 10px'};
         const msgWrapStyle = {height: '100%', paddingTop: roomName ? '2.5rem': '1rem', paddingBottom: isToolBoxVisible ? '9rem' : '3rem', boxSizing: 'border-box'};
         const roomNameStyle = {height: '2.5rem', width:'100%', lineHeight: '2.5rem', textAlign: 'center', position: 'fixed', top: '0', left: '0', color: 'rgb(250, 250, 250)', fontSize: '1rem',
