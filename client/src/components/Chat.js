@@ -97,7 +97,11 @@ export default class Chat extends Component {
                 this.isPermitNotification = true;
             }
         };
-        window.Notification && Notification.requestPermission(callback).then(callback);
+
+        if (window.Notification) {
+            const r = Notification.requestPermission(callback);
+            r && r.then(callback);
+        }
     }
 
     componentDidUpdate() {
