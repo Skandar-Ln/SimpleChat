@@ -11,28 +11,41 @@ const auth = require('../util/auth');
 
 const koaRouter = Router();
 
+async function getChatData(chatId) {
+    const a = await Chat.findOne({
+        where: {
+            chatId
+        }
+    });
+
+    return auth.getPublicChatData(a);
+}
+
 koaRouter.post('api/chat/public/create', async (ctx, next) => {
+    const {roomName} = ctx.request.fields || {};
     const chatId = shortid.generate();
 
     await Chat.create({
-        chatId
+        chatId,
+        roomName
     }).then(async function(res) {
-        ctx.body = _.pick(res, ['chatId']);
+        ctx.body = auth.getPublicChatData(res);
     });
 });
 
 koaRouter.post('api/chat/secret/create', async (ctx, next) => {
     const fields = ctx.request.fields || {};
-    let {key, chatId} = fields;
+    let {key, chatId, roomName} = fields;
 
     chatId = chatId || shortid.generate();
     key = key || util.generateRandomString();
 
     await Chat.create({
         chatId,
-        key
+        key,
+        roomName
     }).then(function(res) {
-        ctx.body = _.pick(res, ['chatId', 'key']);
+        ctx.body = auth.getPublicChatData(res);;
     });
 });
 
@@ -49,11 +62,12 @@ koaRouter.post('api/chat/auth', async (ctx, next) => {
         }
 
         return controlUtil.successHandler(ctx, '状态有效', {
-            user: ctx.session[chatId].user
+            user: ctx.session[chatId].user,
+            chatData: await getChatData(chatId)
         });
     }
 
-    const isValid = await auth.isChatKeyValid(chatId, key);
+    const {isValid, chatData} = await auth.checkChat(chatId, key);
 
     if (!isValid) {
         return controlUtil.rejectHandler(ctx, '密码错误');
@@ -64,7 +78,7 @@ koaRouter.post('api/chat/auth', async (ctx, next) => {
         user
     };
 
-    controlUtil.successHandler(ctx, '登录成功', {user});
+    controlUtil.successHandler(ctx, '登录成功', {user, chatData});
 });
 
 module.exports = koaRouter;
