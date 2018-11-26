@@ -12,9 +12,11 @@ koaRouter.post('api/service/oss/sts', async (ctx, next) => {
 
 koaRouter.post('api/service/oss/get', async (ctx, next) => {
     const fields = ctx.request.fields || {};
-    const {fileName} = fields;
+    const {fileName, type} = fields;
 
-    const url = file.getDownloadUrl(fileName);
+    const url = file.getDownloadUrl(fileName, {
+        isThumb: type === 'img'
+    });
     ctx.body = {url};
 });
 
