@@ -4,7 +4,8 @@ const {syncTable} = require('./util');
 
 const Chat = sequelize.define('chat', {
     chatId: Sequelize.STRING,
-    key: Sequelize.STRING
+    key: Sequelize.STRING,
+    roomName: Sequelize.STRING
 });
 
 syncTable(Chat);

@@ -4,6 +4,7 @@ import request from 'axios';
 import moment from 'moment';
 import last from 'lodash/last';
 import isEmpty from 'lodash/isEmpty';
+import get from 'lodash/get';
 import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill';
 
 import ContentInput from './ContentInput';
@@ -53,7 +54,6 @@ export default class Chat extends Component {
         loadingImgUrl: '',
         isToolBoxVisible: false,
         roomName: '', // 新创建房间的房间名
-        resRoomName: '', // 返回的房间名
         key: '', // 房间暗号
         showNewRoomAdressAlert: false, // 是否展示新创建房间地址信息
     }
@@ -83,21 +83,28 @@ export default class Chat extends Component {
             chatId
         }).then(res => {
             if (res.data.success) {
+                const result = res.data.result || {};
+
                 this.setState({
                     isLogin: true,
-                    user: res.data.result.user
+                    user: result.user,
+                    roomName: get(result, 'chatData.roomName')
                 })
                 this.start();
             }
         });
-    
+
         // 通知
         const callback = res => {
             if (res === 'granted') {
                 this.isPermitNotification = true;
             }
         };
-        window.Notification && Notification.requestPermission(callback).then(callback);
+
+        if (window.Notification) {
+            const r = Notification.requestPermission(callback);
+            r && r.then(callback);
+        }
     }
 
     componentDidUpdate() {
@@ -236,7 +243,7 @@ export default class Chat extends Component {
         return Modal.alert('创建新的聊天房间',
                 <div className="am-modal-input-container create-new-room-container">
                     <div className="am-modal-input">
-                        <label><input type="text" onChange={(e) => that.handleNewRoomInfoSet('roomName', e)} placeholder="输入房间名称, 必填" /></label>
+                        <label><input type="text" onChange={(e) => that.handleNewRoomInfoSet('inputRoomName', e)} placeholder="输入房间名称, 必填" /></label>
                     </div>
                     <div className="am-modal-input">
                          <label><input type="text" onChange={(e) => that.handleNewRoomInfoSet('key', e)} placeholder="设置暗号以创建私密房间, 非必填)" /></label>
@@ -254,7 +261,7 @@ export default class Chat extends Component {
                     text: '创建',
                     onPress: v => {
                         return new Promise((resolve, reject) => {
-                            const { roomName, key } = this.state;
+                            const { inputRoomName: roomName, key } = this.state;
                             if (isEmpty(roomName)) {
                                 Toast.info('房间名必填', 1);
                                 return reject();
@@ -271,13 +278,6 @@ export default class Chat extends Component {
                                                     key: '',
                                                     showNewRoomAdressAlert: true
                                                 });
-                                                // 重置key 与roomName 以保证下次正常创建房间
-                                                this.setState(prevState => { 
-                                                    return {
-                                                        resRoomName: prevState.roomName,
-                                                        roomName: '',
-                                                    }
-                                                })
                                             }
                                         })
                         })
@@ -287,7 +287,7 @@ export default class Chat extends Component {
     }
 
     renderNewRoomAdress() {
-        const newRoomAddress = `${window.location.origin}/${this.state.chatId}?roomname=${this.state.resRoomName}`;
+        const newRoomAddress = `${window.location.origin}/${this.state.chatId}`;
         return  (<Modal
         visible={this.state.showNewRoomAdressAlert}
         transparent
@@ -469,7 +469,7 @@ export default class Chat extends Component {
    }
 
     renderChat() {
-        const {user, messages = [], isToolBoxVisible} = this.state;
+        const {user, messages = [], isToolBoxVisible, roomName} = this.state;
         const chatId = this.chatId;
         const roomName = this.getRoomName();
         console.log('roomName',roomName)
