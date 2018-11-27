@@ -1,5 +1,3 @@
 import axios from 'axios';
 
-return (...args) => {
-    axios
-}
+return (...args) => axios

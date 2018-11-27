@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import startsWith from 'lodash/startsWith';
 
 import AsyncImg from '../AsyncImg';

@@ -9,7 +9,7 @@ class ContentInput extends Component {
 
     handlePaste = e => {
         const item = e.clipboardData.items[0];
-        const chatId = this.props.chatId || '';
+        // const chatId = this.props.chatId || '';
 
         if (item.kind === 'file') {
             const file = item.getAsFile();

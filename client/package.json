@@ -31,6 +31,6 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "proxy": "http://localhost:8009",
-  "proxy1": "https://chat.bulibuli.wang"
+  "proxy1": "http://localhost:8009",
+  "proxy": "https://chat.bulibuli.wang"
 }

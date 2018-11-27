@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {List, InputItem, WhiteSpace, WingBlank, Button, Toast, Modal, Icon} from 'antd-mobile';
+import {InputItem, WhiteSpace, WingBlank, Button, Toast, Modal, Icon} from 'antd-mobile';
 import request from 'axios';
 import moment from 'moment';
 import last from 'lodash/last';
@@ -38,7 +38,7 @@ export default class Chat extends Component {
         // }
 
         this.conentScrollBoxRef = React.createRef();
-        this.isPermitNotification = false;
+        this.isUseTitleNotice = true; // 使用title来进行新消息提醒
         this.handleImgUploading = this.handleImgUploading.bind(this);
     }
 
@@ -87,18 +87,6 @@ export default class Chat extends Component {
                 this.start();
             }
         });
-
-        // 通知
-        const callback = res => {
-            if (res === 'granted') {
-                this.isPermitNotification = true;
-            }
-        };
-
-        if (window.Notification) {
-            const r = Notification.requestPermission(callback);
-            r && r.then(callback);
-        }
     }
 
     componentDidUpdate() {
@@ -113,6 +101,23 @@ export default class Chat extends Component {
 
     handleContentLoad = () => {
         this.scrollToBottom();
+    }
+
+    changeTitleToNotice() {
+         // 使用title来提醒收到新消息
+         if (document.hidden) {
+            if (document.title !== '新消息') {
+                document.title = '新消息';
+                setTimeout(()=> document.title = '\u200E', 500);
+                setTimeout(()=> document.title = '新消息', 1000);
+                setTimeout(()=> document.title = '\u200E', 1500);
+                setTimeout(()=> document.title = '新消息', 2000);
+            }
+        } else {
+            if (document.title === '新消息') {
+                document.title = 'SimpleChat'
+            }
+        }
     }
 
     // 初始事件
@@ -139,13 +144,18 @@ export default class Chat extends Component {
              if (!Array.isArray(data)) {
                 data = [data];
              }
-
+    
              this.setState({
                  messages: [
                      ...this.state.messages,
                      ...data
                  ]
-             })
+             });
+
+             if( this.isUseTitleNotice && this.state.user && last(data) && this.state.user !== last(data).from) {
+                // 使用title来提醒收到新消息
+               this.changeTitleToNotice();
+             }
         };
 
         evtSource.addEventListener('withdraw', evt => {
@@ -256,14 +266,7 @@ export default class Chat extends Component {
                 return;
             }
 
-            this.setState({messages});
-
-            if (this.isPermitNotification && lastNew.createdAt !== lastOld.createdAt && this.state.user !== lastNew.from) {
-                new Notification(`You've got a notification`, {
-                    // body: lastNew.content,
-                    icon: config.images[lastNew.from]
-                });
-            }
+            this.setState({messages}); 
         });
     }
 
@@ -319,28 +322,14 @@ export default class Chat extends Component {
         this.setState({input: '', isPhoneNotice: false});
     }
 
-    handleChange = event => {
-        this.setState({input: event.target.value});
-    }
+    // handleSeeMore = () => {
+    //     this.setState({pageCount: this.state.pageCount + 1}, this.getMessages);
+    // }
 
-    handleChangePhone = event => {
-        this.setState({isPhoneNotice: event.target.checked});
-    }
-
-    handleSeeMore = () => {
-        this.setState({pageCount: this.state.pageCount + 1}, this.getMessages);
-    }
-
-    handleUserChange = e => {
+    handechange(key, value) {
         this.setState({
-            inputUser: e
-        });
-    }
-
-    handleKeyChange = e => {
-        this.setState({
-            inputKey: e
-        });
+            [key]: value
+        })
     }
 
     handleToolBoxVisibleToggle = () => {
@@ -349,21 +338,15 @@ export default class Chat extends Component {
         });
     }
 
-    renderActivity() {
-        return (
-            null
-        );
-    }
-
     renderLogin() {
         return (
             <div style={{paddingTop: "10%"}}>
                 <WingBlank>
-                    <InputItem onChange={this.handleUserChange}>昵称</InputItem>
+                    <InputItem onChange={(e) => this.handechange('inputUser', e)}>昵称</InputItem>
                     <WhiteSpace />
                     <WhiteSpace />
                     
-                    <InputItem onChange={this.handleKeyChange}>暗号</InputItem>
+                    <InputItem onChange={(e) => this.handechange('inputKey', e)}>暗号</InputItem>
                     <WhiteSpace />
                     <WhiteSpace />
                     <WhiteSpace />
@@ -381,23 +364,8 @@ export default class Chat extends Component {
     renderChat() {
         const {user, messages = [], isToolBoxVisible, roomName} = this.state;
         const chatId = this.chatId;
-        console.log('roomName',roomName)
         const chatWrapStyle = { height: '100%', padding: '0 10px' };
         const msgWrapStyle = { height: '100%', paddingTop: roomName ? '2.5rem' : '1rem', paddingBottom: isToolBoxVisible ? '9rem' : '3rem', boxSizing: 'border-box' };
-        const roomNameStyle = {
-            height: '2.5rem',
-            maxWidth: '400px',
-            width: '100%',
-            lineHeight: '2.5rem',
-            textAlign: 'center',
-            position: 'fixed',
-            top: '0',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            color: 'rgb(250, 250, 250)',
-            fontSize: '1rem',
-            backgroundColor: 'rgb(45,44,49)'
-        }
         return (
             <div style={chatWrapStyle}>
                 <div style={msgWrapStyle}>
@@ -406,28 +374,31 @@ export default class Chat extends Component {
                 </div>
                 </div>
                 {this.renderInput()}
-                {roomName ? <div style={roomNameStyle}>房间名：{roomName}</div> : null}
+                {roomName ? <div className="chat-room-name">房间名：{roomName}</div> : null}
             </div>
         );
     }
 
     renderInput() {
         const isToolBoxVisible = this.state.isToolBoxVisible;
-        const inputWrapStyle = {position: 'absolute', bottom: '1rem', left: '0', width: '100%', boxSizing: 'border-box', padding: '0 10px'}
+        const inputWrapStyle = {position: 'absolute', bottom: '1rem', left: '0', width: '100%', boxSizing: 'border-box', padding: '0 10px'};
+        const loadingImgWrapStyle = { width: "5rem", position: "absolute", minHeight: '23px', right: "0", bottom: "2rem" };
+        const loadingCoverStyle = { backgroundColor: "rgba(51, 47, 47, 0.63)", position: "absolute", height: "100%", width: "100%", left: "0", top: "0" };
+        const loadingIconWrapStyle = { position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
         return (
             <div style={inputWrapStyle}>
                 <form onSubmit={this.handleSubmit}>
                     <div style={{position: 'relative'}}>
-                      {!!this.state.loadingImgUrl  ? (<div style={{ width: "5rem", position: "absolute", minHeight: '23px', right: "0", bottom: "2rem" }}>
-                                <img style={{ width: "100%" }} src={this.state.loadingImgUrl} />
-                                <div style={{ backgroundColor: "rgba(51, 47, 47, 0.63)", position: "absolute", height: "100%", width: "100%", left: "0", top: "0" }}>
-                                    <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
+                      {!!this.state.loadingImgUrl  ? (<div style={loadingImgWrapStyle}>
+                                <img alt='' style={{ width: "100%" }} src={this.state.loadingImgUrl} />
+                                <div style={loadingCoverStyle}>
+                                    <div style={loadingIconWrapStyle}>
                                         <Icon type="loading" size="md" color="#047" />
                                     </div>
                                 </div>
                         </div>) : null}
                         <div style={{paddingRight: '2rem'}}>
-                            <ContentInput value={this.state.input} onChange={this.handleChange} onImgUploading={this.handleImgUploading}/>
+                            <ContentInput value={this.state.input} onChange={(e) => this.handechange('input', e.target.value)} onImgUploading={this.handleImgUploading}/>
                         </div>
                         <div onClick={this.handleToolBoxVisibleToggle} style={{position: 'absolute', right: 0, top: 0}}>
                             <i style={{fontSize: '1.6rem'}} className={`${isToolBoxVisible ? 'icon-minus' : 'icon-add'} iconfont`}></i>
