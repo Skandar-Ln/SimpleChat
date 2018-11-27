@@ -19,15 +19,20 @@ class MessageContainer extends Component {
     }
 
     render() {
-        const {user, messages = [], onContentLoad} = this.props;
+        const {user, messages , onContentLoad} = this.props;
 
         let time1 = null;
         let time2 = null;
         let showTime = true;
 
+        if (!Array.isArray(messages) && !messages) {
+            return (<div>
+                    <Icon type="loading" />
+                </div>)
+        }
+
         return (
             <div>
-                {_.isEmpty(messages) && <Icon type="loading" />}
                 {
                     messages.map((item, index) => {
                         const isSelf = user === item.from;
