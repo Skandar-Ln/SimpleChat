@@ -5,7 +5,7 @@ import Zmage from 'react-zmage'
 import {Icon} from 'antd-mobile';
 // import 'react-imageview/dist/react-imageview.min.css';
 
-let comboCount = 0;
+// let comboCount = 0;
 
 // document.addEventListener('click', e => {
 //     const className = e.target.className;

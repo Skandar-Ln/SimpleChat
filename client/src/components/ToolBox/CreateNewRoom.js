@@ -38,7 +38,7 @@ class CreateNewRoom extends Component {
             长按复制 或 点击后在新窗口打开
         </div>
         <div>
-            <a href={newRoomAddress} target='_blank'>{newRoomAddress}</a>
+            <a href={newRoomAddress} target='_blank' rel="noopener noreferrer">{newRoomAddress}</a>
         </div>
       </Modal>)
     }
@@ -47,7 +47,7 @@ class CreateNewRoom extends Component {
         const that = this;
         // 新建聊天页弹窗
         return Modal.alert('创建新的聊天房间',
-                <div className="am-modal-input-container create-new-room-container">
+                <div className="am-modal-input-container" style={{padding: '0 10px'}}>
                     <div className="am-modal-input">
                         <label><input type="text" onChange={(e) => that.handleNewRoomInfoSet('roomName', e)} placeholder="房间名称 (必填)" /></label>
                     </div>
@@ -95,15 +95,13 @@ class CreateNewRoom extends Component {
     }
 
     render() {
+        const wrapStyle = {position: 'relative', width: '100%', height: '100%'};
+        const innerWrapStyle = {position: 'relative', width: '100%', height: '100%'};
+        const iconWrapStyle = {width: '100%', position: 'absolute', top: '50%', transform: 'translateY(-50%)'};
         return (
-            <div style={{position: 'relative', width: '100%', height: '100%'}}>
-                <div style={{position: 'relative', width: '100%', height: '100%'}} onClick={this.createNewRoomAlert}>
-                    <div style={{
-                        width: '100%',
-                        position: 'absolute',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                    }}>
+            <div style={wrapStyle}>
+                <div style={innerWrapStyle} onClick={this.createNewRoomAlert}>
+                    <div style={iconWrapStyle}>
                         <i style={{fontSize: '2.6rem', display: 'block'}} className="iconfont icon-chat-1"></i>
                         新的会话
                     </div>

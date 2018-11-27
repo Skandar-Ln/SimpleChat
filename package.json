@@ -12,7 +12,9 @@
     "build-fe": "npm run client-build && rm -rf server/static && mkdir server/static && cp -r client/build/* server/static",
     "client-start": "cd client && npm run start",
     "client-build": "cd client && npm run build",
-    "client-test": "cd client && npm run test --env=jsdom"
+    "client-test": "cd client && npm run test --env=jsdom",
+    "eslint": "eslint --ext .js --ext .jsx client/",
+    "fix": "eslint --ignore-path /node_modules/ --ignore-path  --fix  --ext .js --ext .jsx client/"
   },
   "keywords": [],
   "author": "Skandar",
@@ -33,5 +35,18 @@
     "mysql2": "^1.5.2",
     "sequelize": "^4.33.2",
     "shortid": "^2.2.13"
+  },
+  "devDependencies": {
+    "@ljharb/eslint-config": "^13.0.0",
+    "babel-eslint": "^9.0.0",
+    "eslint": "5.6.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-react-app": "^3.0.5",
+    "eslint-loader": "^2.1.1",
+    "eslint-plugin-flowtype": "^2.50.3",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-react": "^7.11.1"
   }
 }

@@ -20,7 +20,7 @@ class AsyncFile extends Component {
 
     render() {
         const url = this.state.url;
-        const fileName = this.props.fileName || '';
+        // const fileName = this.props.fileName || '';
 
         return (
             url ? <a href={url}>[收到一份文件，点击下载]</a>
