@@ -19,14 +19,14 @@
     border-radius: 6px;
     padding: 4px 8px;
     display: inline-block;
-    max-width:70%;
+    max-width:65%;
     background-color: #f8f8f8;
     color: rgb(55, 62, 70);
     position: relative;
 }
 
 .Chat-message.self, .Chat-message.self a{
-    background-color: #3c95fd;
+    background-color: #0176ff;
     color: rgb(255, 255, 255);
  }
 
@@ -42,6 +42,7 @@
  .Chat-sender.self {
     float: right;
     margin-left: 8px;
+    margin-right: 0;
 }
 .Chat-time-remindner {
     background-color: #bdb7b7b0;
@@ -79,4 +80,26 @@
 }
 .create-new-room-container input::-webkit-input-placeholder {
     padding: 0!important;
+}
+
+/* 修改滚动条默认样式 */
+::-webkit-scrollbar {
+  width: 1px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  width: 1px;
+  background-color: transparent;
+  border-radius: 1px;
+}
+::-webkit-scrollbar-track-piece {
+  /*滚动条轨道内层*/
+  border-radius: 1px;
+  background-color: transparent;
+}
+::-webkit-scrollbar-track {
+  /*滚动条轨道外层*/
+  margin:0;
 }
