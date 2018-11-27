@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {List, InputItem, WhiteSpace, WingBlank, Button, Modal, Toast, Icon} from 'antd-mobile';
+import {List, InputItem, WhiteSpace, WingBlank, Button, Toast, Modal, Icon} from 'antd-mobile';
 import request from 'axios';
 import moment from 'moment';
 import last from 'lodash/last';
@@ -40,9 +40,6 @@ export default class Chat extends Component {
         this.conentScrollBoxRef = React.createRef();
         this.isPermitNotification = false;
         this.handleImgUploading = this.handleImgUploading.bind(this);
-        this.handleNewRoomInfoSet = this.handleNewRoomInfoSet.bind(this);
-        this.createNewRoomAlert = this.createNewRoomAlert.bind(this);
-        this.renderNewRoomAdress = this.renderNewRoomAdress.bind(this);
     }
 
     state = {
@@ -52,10 +49,7 @@ export default class Chat extends Component {
         pageCount: 1,
         isPhoneNotice: false,
         loadingImgUrl: '',
-        isToolBoxVisible: false,
-        roomName: '', // 新创建房间的房间名
-        key: '', // 房间暗号
-        showNewRoomAdressAlert: false, // 是否展示新创建房间地址信息
+        isToolBoxVisible: false
     }
 
     componentWillUnmount = () => {
@@ -229,81 +223,6 @@ export default class Chat extends Component {
             ], 'default', null, ['请输入昵称'])
     }
 
-    handleNewRoomInfoSet(key, e) {
-        const value = e.currentTarget.value;
-        console.log(key, value)
-        this.setState({
-            [key]: value
-        })
-    }
-
-    createNewRoomAlert() {
-        const that = this;
-        // 新建聊天页弹窗
-        return Modal.alert('创建新的聊天房间',
-                <div className="am-modal-input-container create-new-room-container">
-                    <div className="am-modal-input">
-                        <label><input type="text" onChange={(e) => that.handleNewRoomInfoSet('inputRoomName', e)} placeholder="输入房间名称, 必填" /></label>
-                    </div>
-                    <div className="am-modal-input">
-                         <label><input type="text" onChange={(e) => that.handleNewRoomInfoSet('key', e)} placeholder="设置暗号以创建私密房间, 非必填)" /></label>
-                     </div>
-                </div>
-                ,
-            [
-                {
-                    text: '取消',
-                    onPress: value => {
-                        console.log('取消创建新聊天房间')
-                    },
-                },
-                {
-                    text: '创建',
-                    onPress: v => {
-                        return new Promise((resolve, reject) => {
-                            const { inputRoomName: roomName, key } = this.state;
-                            if (isEmpty(roomName)) {
-                                Toast.info('房间名必填', 1);
-                                return reject();
-                            };
-                            const path = isEmpty(key) ? 'public' : 'secret';// 已填写房间名, 且未填写暗号，创建公共聊天窗口, 否则，创建私有房间
-                            request.post(`/api/chat/${path}/create`, {
-                                            roomName,
-                                            key,
-                                        }).then(res => {
-                                            if (res && (res.status == 200) && res.data.chatId) {
-                                                resolve();
-                                                this.setState({
-                                                    chatId: res.data.chatId,
-                                                    key: '',
-                                                    showNewRoomAdressAlert: true
-                                                });
-                                            }
-                                        })
-                        })
-                    }
-                }
-            ])
-    }
-
-    renderNewRoomAdress() {
-        const newRoomAddress = `${window.location.origin}/${this.state.chatId}`;
-        return  (<Modal
-        visible={this.state.showNewRoomAdressAlert}
-        transparent
-        maskClosable={false}
-
-        title="创建新聊天房间成功"
-        footer={[{ text: '确定', onPress: () => this.setState({showNewRoomAdressAlert: false})}]}
-      >
-        <div>
-            长按复制 或 点击后在新窗口打开
-        </div>
-        <div>
-            <a href={newRoomAddress} target='_blank'>{newRoomAddress}</a>
-        </div>
-      </Modal>)
-    }
 
     scrollToBottom = () => {
         const conentScrollBox = this.conentScrollBoxRef.current;
@@ -459,24 +378,26 @@ export default class Chat extends Component {
         )
     }
 
-   getRoomName() {
-    // 从查询字符串中红获取房间名
-    const roomName = window.location.search.split('=')[1];
-    if (roomName) {
-        return decodeURIComponent(roomName)
-    };
-    return null;
-   }
-
     renderChat() {
         const {user, messages = [], isToolBoxVisible, roomName} = this.state;
         const chatId = this.chatId;
-        const roomName = this.getRoomName();
         console.log('roomName',roomName)
-        const chatWrapStyle = {height: '100%', padding:'0 10px'};
-        const msgWrapStyle = {height: '100%', paddingTop: roomName ? '2.5rem': '1rem', paddingBottom: isToolBoxVisible ? '9rem' : '3rem', boxSizing: 'border-box'};
-        const roomNameStyle = {height: '2.5rem', width:'100%', lineHeight: '2.5rem', textAlign: 'center', position: 'fixed', top: '0', left: '0', color: 'rgb(250, 250, 250)', fontSize: '1rem',
-        backgroundColor: 'rgb(45,44,49)' }
+        const chatWrapStyle = { height: '100%', padding: '0 10px' };
+        const msgWrapStyle = { height: '100%', paddingTop: roomName ? '2.5rem' : '1rem', paddingBottom: isToolBoxVisible ? '9rem' : '3rem', boxSizing: 'border-box' };
+        const roomNameStyle = {
+            height: '2.5rem',
+            maxWidth: '400px',
+            width: '100%',
+            lineHeight: '2.5rem',
+            textAlign: 'center',
+            position: 'fixed',
+            top: '0',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            color: 'rgb(250, 250, 250)',
+            fontSize: '1rem',
+            backgroundColor: 'rgb(45,44,49)'
+        }
         return (
             <div style={chatWrapStyle}>
                 <div style={msgWrapStyle}>
@@ -485,7 +406,6 @@ export default class Chat extends Component {
                 </div>
                 </div>
                 {this.renderInput()}
-                {this.renderNewRoomAdress()}
                 {roomName ? <div style={roomNameStyle}>房间名：{roomName}</div> : null}
             </div>
         );
