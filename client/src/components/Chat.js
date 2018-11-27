@@ -13,6 +13,8 @@ import ToolBox from './ToolBox';
 import './Chat.css';
 import personA from '../images/personA.png';
 import personB from '../images/personB.png';
+import changeTitleToNotice from '../util/changeTitleToNotice';
+
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
 const config = {
@@ -44,7 +46,7 @@ export default class Chat extends Component {
 
     state = {
         user: '',
-        messages: [],
+        messages: null, // 数据类型应为数据， 初始值设为null用以判断是否返回数据
         input: '',
         pageCount: 1,
         isPhoneNotice: false,
@@ -103,23 +105,6 @@ export default class Chat extends Component {
         this.scrollToBottom();
     }
 
-    changeTitleToNotice() {
-         // 使用title来提醒收到新消息
-         if (document.hidden) {
-            if (document.title !== '新消息') {
-                document.title = '新消息';
-                setTimeout(()=> document.title = '\u200E', 500);
-                setTimeout(()=> document.title = '新消息', 1000);
-                setTimeout(()=> document.title = '\u200E', 1500);
-                setTimeout(()=> document.title = '新消息', 2000);
-            }
-        } else {
-            if (document.title === '新消息') {
-                document.title = 'SimpleChat'
-            }
-        }
-    }
-
     // 初始事件
     start() {
         const chatId = this.chatId;
@@ -144,18 +129,16 @@ export default class Chat extends Component {
              if (!Array.isArray(data)) {
                 data = [data];
              }
-    
+             const messages = this.state.messages ? this.state.messages : [];
              this.setState({
                  messages: [
-                     ...this.state.messages,
+                     ...messages,
                      ...data
                  ]
              });
 
-             if( this.isUseTitleNotice && this.state.user && last(data) && this.state.user !== last(data).from) {
-                // 使用title来提醒收到新消息
-               this.changeTitleToNotice();
-             }
+            // 使用title来提醒收到新消息
+            changeTitleToNotice(this.isUseTitleNotice, this.state.user, data);
         };
 
         evtSource.addEventListener('withdraw', evt => {
@@ -244,31 +227,31 @@ export default class Chat extends Component {
         conentScrollBox.scrollTop = conentScrollBox.scrollHeight;
     }
 
-    getMessages(isFirst) {
-        const chatId = this.chatId;
-        // const key = this.state.key;
+    // getMessages(isFirst) {
+    //     const chatId = this.chatId;
+    //     // const key = this.state.key;
 
-        return request.post('/api/message/list', {
-            size: 10 * this.state.pageCount,
-            chatId
-        }).then(({data} = {}) => {
-            if (data.success === false) {
-                document.write(data.message);
-                this.stop();
-                return;
-            }
+    //     return request.post('/api/message/list', {
+    //         size: 10 * this.state.pageCount,
+    //         chatId
+    //     }).then(({data} = {}) => {
+    //         if (data.success === false) {
+    //             document.write(data.message);
+    //             this.stop();
+    //             return;
+    //         }
 
-            const messages = data.result;
-            const lastNew = last(messages) || {};
-            const lastOld = last(this.state.messages) || {};
+    //         const messages = data.result;
+    //         const lastNew = last(messages) || {};
+    //         const lastOld = last(this.state.messages) || {};
 
-            if (lastNew.updatedAt === lastOld.updatedAt && messages.length === this.state.messages.length) {
-                return;
-            }
+    //         if (lastNew.updatedAt === lastOld.updatedAt && messages.length === this.state.messages.length) {
+    //             return;
+    //         }
 
-            this.setState({messages}); 
-        });
-    }
+    //         this.setState({messages}); 
+    //     });
+    // }
 
     handleLogin = () => {
         const chatId = this.chatId;
@@ -362,7 +345,7 @@ export default class Chat extends Component {
     }
 
     renderChat() {
-        const {user, messages = [], isToolBoxVisible, roomName} = this.state;
+        const {user, messages, isToolBoxVisible, roomName} = this.state;
         const chatId = this.chatId;
         const chatWrapStyle = { height: '100%', padding: '0 10px' };
         const msgWrapStyle = { height: '100%', paddingTop: roomName ? '2.5rem' : '1rem', paddingBottom: isToolBoxVisible ? '9rem' : '3rem', boxSizing: 'border-box' };
