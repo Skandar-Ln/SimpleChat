@@ -37,7 +37,10 @@ app
     .use(bodyParser())
     .use(router.routes())
     .use(router.allowedMethods())
-    .use(Static(path.resolve(__dirname, 'static')))
+    .use(Static(path.resolve(__dirname, 'static'), {
+        maxage: 365 * 24 * 60 * 60 * 1000,
+        index: null
+    }))
     .use(pageRouter.routes())
 
 app.listen(8009);
