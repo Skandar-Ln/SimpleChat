@@ -13,7 +13,7 @@ import ToolBox from './ToolBox';
 import './Chat.css';
 import personA from '../images/personA.png';
 import personB from '../images/personB.png';
-import changeTitleToNotice from '../util/changeTitleToNotice';
+import TitleNoticer from '../util/TitleNoticer';
 
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
@@ -23,6 +23,9 @@ const config = {
         personB
     }
 };
+// title消息提醒
+const titleNoticer = new TitleNoticer();
+titleNoticer.init();
 
 // const store = JSON.parse(localStorage.getItem('chatStore')) || {};
 const EventSource = NativeEventSource || EventSourcePolyfill;
@@ -40,7 +43,6 @@ export default class Chat extends Component {
         // }
 
         this.conentScrollBoxRef = React.createRef();
-        this.isUseTitleNotice = true; // 使用title来进行新消息提醒
         this.handleImgUploading = this.handleImgUploading.bind(this);
     }
 
@@ -138,7 +140,7 @@ export default class Chat extends Component {
              });
 
             // 使用title来提醒收到新消息
-            changeTitleToNotice(this.isUseTitleNotice, this.state.user, data);
+            titleNoticer.emit(this.state.user, data);
         };
 
         evtSource.addEventListener('withdraw', evt => {
