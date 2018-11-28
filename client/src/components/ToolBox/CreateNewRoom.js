@@ -38,7 +38,7 @@ class CreateNewRoom extends Component {
             长按复制 或 点击后在新窗口打开
         </div>
         <div>
-            <a href={newRoomAddress} target='_blank' rel="noopener noreferrer">{newRoomAddress}</a>
+            <a href={newRoomAddress} target='_blank' rel="noopener noreferrer" style={{wordBreak: 'break-all'}}>{newRoomAddress}</a>
         </div>
       </Modal>)
     }
