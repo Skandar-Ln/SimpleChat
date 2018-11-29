@@ -46,8 +46,8 @@ koaRouter.get('api/message/events', async (ctx, next) => {
     const body = ctx.body = sse();
 
     // otherwise node will automatically close this connection in 2 minutes
-    ctx.req.setTimeout(Number.MAX_VALUE);
-    // ctx.req.setTimeout(2147483647);
+    // ctx.req.setTimeout(Number);
+    ctx.req.setTimeout(2147483647);
 
     ctx.type = 'text/event-stream';
     ctx.set('Cache-Control', 'no-cache, no-transform');
