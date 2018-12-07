@@ -14,6 +14,7 @@ class ContentInput extends Component {
             isToolBoxVisible: false,
         };
         this.handleChange = this.handleChange.bind(this);
+        this.handleImgUploading = this.handleImgUploading.bind(this);
     }
 
     handleChange(e) {
