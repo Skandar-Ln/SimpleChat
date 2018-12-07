@@ -43,7 +43,9 @@ export default class Chat extends Component {
         // }
 
         this.conentScrollBoxRef = React.createRef();
-        this.handleImgUploading = this.handleImgUploading.bind(this);
+        this.resetPhoneNotice = this.resetPhoneNotice.bind(this);
+        this.updateLoginedState = this.updateLoginedState.bind(this); // 聊天界面输入昵称后调用
+        this.updateBottomPadding = this.updateBottomPadding.bind(this); // input中toolbox显示状态改变后调用
     }
 
     state = {
@@ -53,7 +55,7 @@ export default class Chat extends Component {
         pageCount: 1,
         isPhoneNotice: false,
         loadingImgUrl: '',
-        isToolBoxVisible: false
+        contentBottomPadding: 42, // toolBox显示与隐藏时动态设置聊天内容的bottomPadding
     }
 
     componentWillUnmount = () => {
@@ -97,14 +99,29 @@ export default class Chat extends Component {
         this.scrollToBottom();
     }
      
-    handleImgUploading(loadingImgUrl) {
-        this.setState({
-            loadingImgUrl,
-        });
-    }
-
     handleContentLoad = () => {
         this.scrollToBottom();
+    }
+
+    resetPhoneNotice() {
+        this.setState({
+            isPhoneNotice: false
+        })
+    }
+
+    updateLoginedState(user) {
+        this.setState({
+            isLogin: true,
+            user,
+        })
+    }
+
+    updateBottomPadding(padding) {
+        if (this.state.contentBottomPadding !== padding) {
+            this.setState({
+                contentBottomPadding: padding
+            })
+        }
     }
 
     // 初始事件
@@ -163,59 +180,6 @@ export default class Chat extends Component {
 
     stop() {
         clearInterval(this.interval);
-    }
-
-    inputUserNameAlert() {
-        const chatId = this.chatId;
-        Modal.prompt(null, null,
-            [
-                {
-                    text: '取消',
-                    onPress: value => new Promise((resolve) => {
-                        resolve();
-                    }),
-                },
-                {
-                    text: '确定',
-                    onPress: value => new Promise((resolve, reject) => {
-                        request.post('/api/chat/auth', {
-                            chatId,
-                            user: value
-                        }).then(res => {
-                            if (res.data.success) {
-                                const user =  res.data.result.user;
-                                this.setState({
-                                    isLogin: true,
-                                    user,
-                                })
-
-                                resolve();
-                                Toast.info('设置成功', 1);
-
-                                // 昵称设置成功并马上发送之前输入的消息
-                                const {input, isPhoneNotice} = this.state;
-
-                                if (!isEmpty(input)) {
-                                    // const to = user === 'personA' ? 'personB' : 'personA';
-                                    request.post('/api/message/create', {
-                                        from: user,
-                                        chatId,
-                                        isPhoneNotice,
-                                        content: input
-                                    }).then(({data} = {}) => {
-                                        if (data.success === false) {
-                                            document.write(data.message);
-                                            window.location.reload();
-                                        }
-                                    });
-                                    this.setState({input: '', isPhoneNotice: false});
-                                }
-                            }
-                            reject();                            
-                        });
-                    }),
-                },
-            ], 'default', null, ['请输入昵称'])
     }
 
 
@@ -278,35 +242,7 @@ export default class Chat extends Component {
         });
     }
 
-    handleSubmit = event => {
-        event.preventDefault();
-        const {user, input, isPhoneNotice} = this.state;
-        const chatId = this.chatId;
-
-        if (!user) {
-            return this.inputUserNameAlert();
-        }
-
-        if (isEmpty(input)) {
-            return;
-        }
-
-        // const to = user === 'personA' ? 'personB' : 'personA';
-        request.post('/api/message/create', {
-            from: user,
-            chatId,
-            isPhoneNotice,
-            content: input
-        }).then(({data} = {}) => {
-            if (data.success === false) {
-                document.write(data.message);
-                window.location.reload();
-            }
-        });
-
-        this.setState({input: '', isPhoneNotice: false});
-    }
-
+  
     // handleSeeMore = () => {
     //     this.setState({pageCount: this.state.pageCount + 1}, this.getMessages);
     // }
@@ -315,12 +251,6 @@ export default class Chat extends Component {
         this.setState({
             [key]: value
         })
-    }
-
-    handleToolBoxVisibleToggle = () => {
-        this.setState({
-            isToolBoxVisible: !this.state.isToolBoxVisible
-        });
     }
 
     renderLogin() {
@@ -341,59 +271,35 @@ export default class Chat extends Component {
                     <WhiteSpace />
                     <Button onClick={this.handleLogin} type="primary">登录</Button>
                 </WingBlank>
-            </div>
-            
+            </div>  
         )
     }
 
     renderChat() {
-        const {user, messages, isToolBoxVisible, roomName} = this.state;
+        const {user, messages, roomName, isPhoneNotice, contentBottomPadding } = this.state;
         const chatId = this.chatId;
         const chatWrapStyle = { height: '100%', padding: '0 10px' };
-        const msgWrapStyle = { height: '100%', paddingTop: roomName ? '2.5rem' : '1rem', paddingBottom: isToolBoxVisible ? '9rem' : '3rem', boxSizing: 'border-box' };
+        const msgWrapStyle = { height: '100%', paddingTop: roomName ? '2.5rem' : '1rem', paddingBottom: contentBottomPadding + 'px', boxSizing: 'border-box' };
         return (
             <div style={chatWrapStyle}>
                 <div style={msgWrapStyle}>
-                <div ref={this.conentScrollBoxRef} style={{overflow: 'auto', height: '100%', padding: '0'}}>
-                    <MessageContainer onContentLoad={this.handleContentLoad} chatId={chatId} user={user} messages={messages} />
+                    <div ref={this.conentScrollBoxRef} style={{overflow: 'auto', height: '100%', padding: '0'}}>
+                        <MessageContainer onContentLoad={this.handleContentLoad} chatId={chatId} user={user} messages={messages} />
+                    </div>
                 </div>
-                </div>
-                {this.renderInput()}
+                <ContentInput 
+                   user={user} 
+                   chatId={chatId}
+                   updateLoginedState={this.updateLoginedState}
+                   updateBottomPadding={this.updateBottomPadding}
+                   isPhoneNotice={isPhoneNotice}
+                   resetPhoneNotice={this.resetPhoneNotice}
+                   />
                 {roomName ? <div className="chat-room-name">房间名：{roomName}</div> : null}
             </div>
         );
     }
 
-    renderInput() {
-        const isToolBoxVisible = this.state.isToolBoxVisible;
-        const inputWrapStyle = {position: 'absolute', bottom: '1rem', left: '0', width: '100%', boxSizing: 'border-box', padding: '0 10px'};
-        const loadingImgWrapStyle = { width: "5rem", position: "absolute", minHeight: '23px', right: "0", bottom: "2rem" };
-        const loadingCoverStyle = { backgroundColor: "rgba(51, 47, 47, 0.63)", position: "absolute", height: "100%", width: "100%", left: "0", top: "0" };
-        const loadingIconWrapStyle = { position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
-        return (
-            <div style={inputWrapStyle}>
-                <form onSubmit={this.handleSubmit}>
-                    <div style={{position: 'relative'}}>
-                      {!!this.state.loadingImgUrl  ? (<div style={loadingImgWrapStyle}>
-                                <img alt='' style={{ width: "100%" }} src={this.state.loadingImgUrl} />
-                                <div style={loadingCoverStyle}>
-                                    <div style={loadingIconWrapStyle}>
-                                        <Icon type="loading" size="md" color="#047" />
-                                    </div>
-                                </div>
-                        </div>) : null}
-                        <div style={{paddingRight: '2rem'}}>
-                            <ContentInput value={this.state.input} onChange={(e) => this.handechange('input', e.target.value)} onImgUploading={this.handleImgUploading}/>
-                        </div>
-                        <div onClick={this.handleToolBoxVisibleToggle} style={{position: 'absolute', right: 0, top: 0}}>
-                            <i style={{fontSize: '1.6rem'}} className={`${isToolBoxVisible ? 'icon-minus' : 'icon-add'} iconfont`}></i>
-                        </div>
-                    </div>
-                    <ToolBox isVisible={isToolBoxVisible} onImgUploading={this.handleImgUploading} createNewRoomAlert={this.createNewRoomAlert}/>                
-                </form>
-           </div>
-        )
-    }
 
     render() {
         return this.state.isLogin ?  this.renderChat() : this.renderLogin();
