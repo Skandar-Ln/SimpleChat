@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@sentry/browser": "^4.4.1",
     "antd-mobile": "^2.2.5",
     "babel-plugin-import": "^1.9.1",
     "event-source-polyfill": "^1.0.4",
